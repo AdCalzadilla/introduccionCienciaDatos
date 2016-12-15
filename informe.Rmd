@@ -1,0 +1,347 @@
+---
+title: "informe"
+author: "Adrián Calzadilla González"
+date: "12 de diciembre de 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Regresión data set Wizmir
+
+### Objetivo
+
+Este fichero contiene la información del tiempo de la ciudad de *Esmira* (*Izmir*), que es el segundo mayor puerto de Turquía tras Estambul y la tercera ciudad del país en población con 4.168.415 habitantes en 2015. El fichero posee la información del tiempo correspondiente al periodo *01/01/1994* hasta el *31/12/1997*. A partir de estas características el objetivo es predecir la temperatura media.
+
+### Análisis de datos
+
+#### Hipótesisi inicial
+
+La temperatura media se trata de promedios estadísticos cogidos a lo largo del día, por lo tanto es muy posible que la relación entre la temperatura media y las temperaturas máximas y mínimas sea importante para realizar un buen modelo.
+
+#### Análisis general
+
+Para analizar el conjunto de datos proporcionado. En primer lugar se lee y exporta el fichero con los datos de *wizmir*, se introducen los nombres de las variables a mano y se comprueba si es un *data.frame*.
+
+```{r}
+wizmir <- read.csv2("./wizmir/wizmir.dat", header = F, sep = ",", comment.char = "@", dec = ".")
+names(wizmir) <- c("Max_temperature", "Min_temperature", "Dewpoint", "Precipitation", "Sea_level_pressure", "Standard_pressure", "Visibility", "Wind_speed", "Max_wind_speed", "Mean_temperature")
+is.data.frame(wizmir)
+```
+
+Seguidamente, se analiza el *data.frame* y el tipo de variables que contiene:
+
+```{r}
+## Características generales de wizmir
+attach(wizmir)
+is.data.frame(wizmir)
+dim(wizmir)
+str(wizmir)
+
+### Existen valores "NA"
+table(is.na(wizmir))
+
+### Tipos de datos de las variables
+is.double(Max_temperature)
+is.double(Min_temperature)
+is.double(Dewpoint)
+is.double(Precipitation)
+is.double(Sea_level_pressure)
+is.double(Standard_pressure)
+is.double(Visibility)
+is.double(Wind_speed)
+is.double(Max_wind_speed)
+is.double(Mean_temperature)
+```
+
+Resumen del *data.frame* en el que se nos muestra el valor máximo y mínimo registrado, el primer cuartil, la mediana, el tercer cuartil y la media de cada variable.
+
+```{r}
+summary(wizmir)
+```
+
+A continuación, se calculan algunas métricas que no salen en *summary*:
+
+```{r}
+## Desviación estandar para cada una de las variables
+allSd <- apply(wizmir, 2, sd)
+## Mediana de cada una de las variables
+allMedian <- apply(wizmir, 2, median)
+## Rango intercuartílico
+allIQR <- apply(wizmir, 2, IQR)
+```
+
+Por último, se grafican todas las variables todas con todas.
+
+```{r}
+# Gráfica de todos con todos
+plot(wizmir)
+```
+
+### Variables
+
+Conjunto de datos explicado uno a uno.
+
+Se ha implementado una función para el calculo de la *moda* esta es:
+
+```{r}
+## Función para calcular la moda
+
+getMode <- function(v) {
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+```
+
+#### Max_temperature
+
+Esta variable se utiliza para guardar la temperatura máxima obtenida en cada observación. Su unidad es el grado *Farenheit*.
+
+#####  Medidas de centralidad
+
+```{r}
+mean(Max_temperature)
+median(Max_temperature)
+getMode(Max_temperature)
+```
+
+##### Medidas de dispersión
+
+```{r}
+var(Max_temperature)
+sd(Max_temperature)
+max(Max_temperature)
+min(Max_temperature)
+range(Max_temperature)
+quantile(Max_temperature)
+```
+
+##### Gráfica de Max_temperature respecto a Mean_temperature, la salida.
+
+```{r}
+plot(Max_temperature, Mean_temperature)
+```
+
+#### Min_temperature
+
+Variable que se utiliza para guardar la temperatura mínima registrada a lo largo del día, se mide en grados *Farenheit*.
+
+#####  Medidas de centralidad
+
+```{r}
+mean(Min_temperature)
+median(Min_temperature)
+getMode(Min_temperature)
+```
+
+##### Medidas de dispersión
+
+```{r}
+var(Min_temperature)
+sd(Min_temperature)
+max(Min_temperature)
+min(Min_temperature)
+range(Min_temperature)
+quantile(Min_temperature)
+```
+
+### Gráfica de Max_temperature respecto a Mean_temperature, la salida.
+
+```{r}
+plot(Min_temperature, Mean_temperature)
+```
+
+#### Dewpoint
+
+El punto de rocío es la temperatura a la que empieza a condensarse el vapor de agua contenido en el aire. La saturación se produce por un aumento de humedad relativa con la misma temperatura, o por un descenso de temperatura con la misma humedad relativa. En este caso su unidad son los grados *Farenheit*.
+
+#####  Medidas de centralidad
+
+```{r}
+mean(Dewpoint)
+median(Dewpoint)
+getMode(Dewpoint)
+```
+
+##### Medidas de dispersión
+
+```{r}
+var(Dewpoint)
+sd(Dewpoint)
+max(Dewpoint)
+min(Dewpoint)
+range(Dewpoint)
+quantile(Dewpoint)
+```
+
+##### Gráfica de Dewpoint respecto a Mean_temperature, la salida.
+
+```{r}
+plot(Dewpoint, Mean_temperature)
+```
+
+#### Precipitation
+
+
+
+##### Medidas de centralidad
+
+```{r}
+mean(Precipitation)
+median(Precipitation)
+getMode(Precipitation)
+```
+
+##### Medidas de dispersión
+
+```{r}
+var(Precipitation)
+sd(Precipitation)
+max(Precipitation)
+min(Precipitation)
+range(Precipitation)
+quantile(Precipitation)
+```
+
+##### Gráfica de Precipitation respecto a Mean_temperature, la salida.
+
+```{r}
+plot(Precipitation, Mean_temperature)
+```
+
+#### Sea_level_pressure
+
+##### Medidas de centralidad
+
+```{r}
+mean(Sea_level_pressure)
+median(Sea_level_pressure)
+getMode(Sea_level_pressure)
+```
+
+##### Medidas de dispersión
+
+````{r}
+var(Sea_level_pressure)
+sd(Sea_level_pressure)
+max(Sea_level_pressure)
+min(Sea_level_pressure)
+range(Sea_level_pressure)
+quantile(Sea_level_pressure)
+```
+
+##### Gráfica de Sea_level_pressure respecto a Mean_temperature, la salida.
+
+```{r}
+plot(Sea_level_pressure, Mean_temperature)
+```
+
+#### Standard_pressure
+
+#####  Medidas de centralidad
+
+```{r}
+mean(Standard_pressure)
+median(Standard_pressure)
+getMode(Standard_pressure)
+```
+
+##### Medidas de dispersión
+
+```{r}
+var(Standard_pressure)
+sd(Standard_pressure)
+max(Standard_pressure)
+min(Standard_pressure)
+range(Standard_pressure)
+quantile(Standard_pressure)
+```
+
+##### Gráfica de Standard_pressure respecto a Mean_temperature, la salida.
+
+```{r}
+plot(Standard_pressure, Mean_temperature)
+```
+
+#### Visibility
+
+##### Medidas de centralidad
+
+```{r}
+mean(Visibility)
+median(Visibility)
+getMode(Visibility)
+```
+
+##### Medidas de dispersión
+
+```{r}
+var(Visibility)
+sd(Visibility)
+max(Visibility)
+min(Visibility)
+range(Visibility)
+quantile(Visibility)
+```
+
+##### Gráfica de Visibility respecto a Mean_temperature, la salida.
+
+```{r}
+plot(Visibility, Mean_temperature)
+```
+
+#### Wind_speed
+
+##### Medidas de centralidad
+
+```{r}
+mean(Wind_speed)
+median(Wind_speed)
+getMode(Wind_speed)
+```
+
+##### Medidas de dispersión
+
+```{r}
+var(Wind_speed)
+sd(Wind_speed)
+max(Wind_speed)
+min(Wind_speed)
+range(Wind_speed)
+quantile(Wind_speed)
+```
+
+##### Gráfica de Wind_speed respecto a Mean_temperature, la salida.
+
+```{r}
+plot(Wind_speed, Mean_temperature)
+```
+
+#### Max_wind_speed
+
+##### Medidas de centralidad
+
+```{r}
+mean(Max_wind_speed)
+median(Max_wind_speed)
+getMode(Max_wind_speed)
+```
+
+##### Medidas de dispersión
+
+```{r}
+var(Max_wind_speed)
+sd(Max_wind_speed)
+max(Max_wind_speed)
+min(Max_wind_speed)
+range(Max_wind_speed)
+quantile(Max_wind_speed)
+```
+
+##### Gráfica de Max_wind_speed respecto a Mean_temperature, la salida.
+
+```{r}
+plot(Max_wind_speed, Mean_temperature)
+```
