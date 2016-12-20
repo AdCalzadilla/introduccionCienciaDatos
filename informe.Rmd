@@ -28,7 +28,29 @@ Para analizar el conjunto de datos proporcionado. En primer lugar se lee y expor
 ```{r}
 wizmir <- read.csv2("./wizmir/wizmir.dat", header = F, sep = ",", comment.char = "@", dec = ".")
 names(wizmir) <- c("Max_temperature", "Min_temperature", "Dewpoint", "Precipitation", "Sea_level_pressure", "Standard_pressure", "Visibility", "Wind_speed", "Max_wind_speed", "Mean_temperature")
-is.data.frame(wizmir)
+
+# Creamos varias funciones que utilizaremos a lo largo del código
+
+## Funciones para crear una tabla donde poder comparar los resultados
+
+percentage <- function(x){
+  x * 100
+}
+
+createTable <- function(x){
+  df <- data.frame(cbind(x), stringsAsFactors = F)
+  porcentaje <- sapply(df[,1], as.numeric)
+  porcentaje <- sapply(df[,1], percentage)
+  df <- cbind(df, porcentaje)
+  df
+}
+
+## Función para calcular la moda
+
+getMode <- function(v) {
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
 ```
 
 Seguidamente, se analiza el *data.frame* y el tipo de variables que contiene:
@@ -83,17 +105,6 @@ plot(wizmir)
 ### Variables
 
 Conjunto de datos explicado uno a uno.
-
-Se ha implementado una función para el calculo de la *moda* esta es:
-
-```{r}
-## Función para calcular la moda
-
-getMode <- function(v) {
-  uniqv <- unique(v)
-  uniqv[which.max(tabulate(match(v, uniqv)))]
-}
-```
 
 #### Max_temperature
 
@@ -184,7 +195,11 @@ plot(Dewpoint, Mean_temperature)
 
 #### Precipitation
 
+Se considera *precipitación* a cualquier producto de la condensación del vapor de agua que cae bajo el efecto de la gravedad. Las principales formas de precipitación incluyen: lluvia, aguanieve, nieve y granizo. 
 
+Este fenómeno ocurre cuando una porción de la atmósfera se satura con vapor de agua, de modo que el agua se condensa y cae.
+
+En este caso su unidad son **
 
 ##### Medidas de centralidad
 
@@ -212,6 +227,8 @@ plot(Precipitation, Mean_temperature)
 ```
 
 #### Sea_level_pressure
+
+La presión atmosférica, a cualquier elevación, se reduce a un valor que se aproxima a la presión al nivel del mar. La unidad en la que se mide esta variable es *inHg*.
 
 ##### Medidas de centralidad
 
@@ -345,3 +362,196 @@ quantile(Max_wind_speed)
 ```{r}
 plot(Max_wind_speed, Mean_temperature)
 ```
+
+### Regresión lineal
+
+#### Ajuste lineal simple
+
+Después de graficar cada una de las variables contra la salida, se toman como variables candidatas para el ajuste lineal simple a *Max_temperature* y *Min_temperature* como favoritas. Además también se calcula la regresión lineal a las variables: *Dewpoint*, *Sea_level_pressure* y *Standard_pressure*.
+
+##### Max_temperature
+
+```{r}
+# wizmirTrain <- read.csv2("./wizmir/wizmir-5-1tra.dat", header = F, sep = ",", dec = ".", comment.char = "@") # Preguntar primero.
+lm1 <- lm(Mean_temperature~Max_temperature, data = wizmir)
+summary(lm1)
+plot(Mean_temperature~Max_temperature, wizmir)
+abline(lm1, col="red")
+confint(lm1)
+# Lista para ir introduciendo los resultados del r2 ajustado.
+adj.r.squared <- list(lm1=round(summary(lm1)$adj.r.squared, digits = 4))
+```
+
+##### Min_temperature
+
+```{r}
+lm2 <- lm(Mean_temperature~Min_temperature, data = wizmir)
+summary(lm2)
+plot(Mean_temperature~Min_temperature, wizmir)
+abline(lm2, col="red")
+confint(lm2)
+adj.r.squared <- c(adj.r.squared, lm2=round(summary(lm2)$adj.r.squared, digits = 4))
+```
+
+##### Dewpoint
+
+```{r}
+lm3 <- lm(Mean_temperature~Dewpoint, data = wizmir)
+summary(lm3)
+plot(Mean_temperature~Dewpoint, wizmir)
+abline(lm3, col= "red")
+confint(lm3)
+adj.r.squared <- c(adj.r.squared, lm3=round(summary(lm3)$adj.r.squared, digits = 4))
+```
+
+##### Sea_level_pressure
+
+```{r}
+lm4 <- lm(Mean_temperature~Sea_level_pressure, data = wizmir)
+summary(lm4)
+plot(Mean_temperature~Sea_level_pressure, wizmir)
+abline(lm4, col = "red")
+confint(lm4)
+adj.r.squared <- c(adj.r.squared, lm4=round(summary(lm4)$adj.r.squared, digits = 4))
+```
+
+##### Standard_pressure
+
+```{r}
+lm5 <- lm(Mean_temperature~Standard_pressure, data = wizmir)
+summary(lm5)
+plot(Mean_temperature~Standard_pressure, data = wizmir)
+abline(lm5, col = "red")
+confint(lm5)
+adj.r.squared <- c(adj.r.squared, lm5=round(summary(lm5)$adj.r.squared, digits = 4))
+```
+
+##### Conclusiones
+
+Para ver que ajuste lineal es mejor se va a utlizar el *R2 ajustado* ya que, *R2* aumenta automáticamente a medida que se agrega nuevas variables independientes a una ecuación de regresión. *R2 ajustado* aumenta sólo cuando se agrega nuevas variables independientes que hacen aumentar el poder explicativo de la ecuación de regresión.
+
+Al finalizar el ajuste lineal simple de las variables seleccionadas, se ha comprobado que tanto *Max_temperature* como *Min_temperature* tienen un valor de *R ajustado* muy bueno superior al 91%. Las otras variables quedan descartadas debido a que su *R ajustado* es muy bajo girando en torno al 61% la mejor de ellas, tal como se muestra en la siguiente tabla:
+
+```{r}
+createTable(adj.r.squared)
+```
+
+#### Modelo lineal múltiple
+
+En primer lugar calculamos el modelo lineal para las dos mejores valores de *R ajustado* conocidos hasta ahora: *Max_temperature* y *Min_temperature*.
+
+##### Max_temperature y Min_temperature
+
+```{r}
+lm6 <- lm(Mean_temperature~Max_temperature+Min_temperature, data = wizmir)
+summary(lm6)
+adj.r.squared <- c(adj.r.squared, lm6=round(summary(lm6)$adj.r.squared, digits = 4))
+```
+
+##### Modelo con todas las variables
+
+```{r}
+lm7 <- lm(Mean_temperature~., data = wizmir)
+summary(lm7)
+adj.r.squared <- c(adj.r.squared, lm7=round(summary(lm7)$adj.r.squared, digits = 4))
+```
+
+##### Eliminación variables no relevantes
+
+```{r}
+lm8 <- lm(Mean_temperature~.-Precipitation-Wind_speed, data = wizmir)
+summary(lm8)
+adj.r.squared <- c(adj.r.squared, lm8=round(summary(lm8)$adj.r.squared, digits = 4))
+```
+
+```{r}
+lm9 <- lm(Mean_temperature~.-Precipitation-Wind_speed-Standard_pressure-Max_wind_speed, data = wizmir)
+summary(lm9)
+adj.r.squared <- c(adj.r.squared, lm9=round(summary(lm9)$adj.r.squared, digits = 4))
+```
+
+```{r}
+lm10 <- lm(Mean_temperature~.-Precipitation-Wind_speed-Standard_pressure-Max_wind_speed-Dewpoint, data = wizmir)
+summary(lm10)
+adj.r.squared <- c(adj.r.squared, lm10=round(summary(lm10)$adj.r.squared, digits = 4))
+```
+
+##### Conclusiones
+
+La unión de las variables *Max_temperature* y *Min_temperature* nos da un *R cuadrado ajustado* de 0.9915 mientras que las de la unión de todas las variables da como resultado 0.9924. Si se quitan las variables apenas hay diferencias respecto al resultado por lo que para una sencilla interpretación de la salida es mejor utilizar el *lm6* por su simplicidad a la hora de elegir variables.
+
+```{r}
+createTable(adj.r.squared)
+```
+
+#### Interacciones
+
+Para realizar las *interacciones* se usarán las cinco variables escogidas anteriormente para el ajuste lineal simple.
+
+```{r}
+lm11 <- lm(Mean_temperature~Max_temperature*Min_temperature, data = wizmir)
+summary(lm11)
+adj.r.squared <- c(adj.r.squared, lm11=round(summary(lm11)$adj.r.squared, digits = 4))
+```
+
+```{r}
+lm12 <- lm(Mean_temperature~Max_temperature*Dewpoint, data = wizmir)
+summary(lm12)
+adj.r.squared <- c(adj.r.squared, lm12=round(summary(lm12)$adj.r.squared, digits = 4))
+```
+
+```{r}
+lm13 <- lm(Mean_temperature~Max_temperature*Sea_level_pressure, data = wizmir)
+summary(lm13)
+adj.r.squared <- c(adj.r.squared, lm13=round(summary(lm13)$adj.r.squared, digits = 4))
+```
+
+```{r}
+lm14 <- lm(Mean_temperature~Max_temperature*Standard_pressure, data = wizmir)
+summary(lm14)
+adj.r.squared <- c(adj.r.squared, lm14=round(summary(lm14)$adj.r.squared, digits = 4))
+```
+
+```{r}
+lm15 <- lm(Mean_temperature~Min_temperature*Dewpoint, data = wizmir)
+summary(lm15)
+adj.r.squared <- c(adj.r.squared, lm15=round(summary(lm15)$adj.r.squared, digits = 4))
+```
+
+```{r}
+lm16 <- lm(Mean_temperature~Min_temperature*Sea_level_pressure, data = wizmir)
+summary(lm16)
+adj.r.squared <- c(adj.r.squared, lm16=round(summary(lm16)$adj.r.squared, digits = 4))
+```
+
+```{r}
+lm17 <- lm(Mean_temperature~Min_temperature*Standard_pressure, data = wizmir)
+summary(lm17)
+adj.r.squared <- c(adj.r.squared, lm17=round(summary(lm17)$adj.r.squared, digits = 4))
+```
+
+```{r}
+lm18 <- lm(Mean_temperature~Dewpoint*Sea_level_pressure, data = wizmir)
+summary(lm18)
+adj.r.squared <- c(adj.r.squared, lm18=round(summary(lm18)$adj.r.squared, digits = 4))
+```
+
+```{r}
+lm19 <- lm(Mean_temperature~Dewpoint*Standard_pressure, data = wizmir)
+summary(lm19)
+adj.r.squared <- c(adj.r.squared, lm19=round(summary(lm19)$adj.r.squared, digits = 4))
+```
+
+```{r}
+lm20 <- lm(Mean_temperature~Sea_level_pressure*Standard_pressure, data = wizmir)
+summary(lm20)
+adj.r.squared <- c(adj.r.squared, lm20=round(summary(lm20)$adj.r.squared, digits = 4))
+```
+
+##### Tabla de resultados
+
+```{r}
+createTable(adj.r.squared)
+```
+
+Como se puede observar la mejor aproximación que se tiene al realizar las interacciones es la regresión lineal *lm13*, que interacciona *Max_temperature* con *Sea_level_pressure*. Aún así su valor es inferior a *lm6*, tal como se muestra en la siguiente tabla.
