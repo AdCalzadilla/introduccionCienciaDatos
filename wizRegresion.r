@@ -408,21 +408,21 @@ createTable(adj.r.squared)
 
 ## Polinómica para Max_temperature
 
-nlm1 <- lm(Mean_temperature~poly(Max_temperature,20), data = wizmir)
+nlm1 <- lm(Mean_temperature~poly(Max_temperature, 19, raw = T), data = wizmir)
 summary(nlm1)
 
 # Rebajo el grado a 4
-nlm1 <- lm(Mean_temperature~poly(Max_temperature,4), data = wizmir)
+nlm1 <- lm(Mean_temperature~poly(Max_temperature, 4, raw = T), data = wizmir)
 summary(nlm1)
 adj.r.squared <- c(adj.r.squared, nlm1=round(summary(nlm1)$adj.r.squared, digits = 4))
 
 ## Polinómica para Min_temperature
 
-nlm2 <- lm(Mean_temperature~poly(Min_temperature,20, raw = T), data = wizmir)
+nlm2 <- lm(Mean_temperature~poly(Min_temperature, 19, raw = T), data = wizmir)
 summary(nlm2)
 
 # Rebajo el grado a 4
-nlm2 <- lm(Mean_temperature~poly(Min_temperature,4, raw = T), data = wizmir)
+nlm2 <- lm(Mean_temperature~poly(Min_temperature, 4, raw = T), data = wizmir)
 summary(nlm2)
 adj.r.squared <- c(adj.r.squared, nlm2=round(summary(nlm2)$adj.r.squared, digits = 4))
 
@@ -436,7 +436,10 @@ summary(nlm3)
 adj.r.squared <- c(adj.r.squared, nlm3=round(summary(nlm3)$adj.r.squared, digits = 4))
 
 ## Polinómica para Sea_level_pressure, directamente a grado 5
-nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 5, raw = T), data = wizmir)
+nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 15, raw = T), data = wizmir)
+summary(nlm4)
+
+nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 3, raw = T), data = wizmir)
 summary(nlm4)
 adj.r.squared <- c(adj.r.squared, nlm4=round(summary(nlm4)$adj.r.squared, digits = 4))
 
@@ -450,3 +453,6 @@ adj.r.squared <- c(adj.r.squared, nlm5=round(summary(nlm5)$adj.r.squared, digits
 nlm6 <- lm(Mean_temperature~Max_temperature +Min_temperature +I(Max_temperature * Min_temperature) +I(Max_temperature^2) +I(Max_temperature^2 * Min_temperature),data = wizmir)
 summary(nlm6)
 adj.r.squared <- c(adj.r.squared, nlm6=round(summary(nlm6)$adj.r.squared, digits = 4))
+
+# Resultados obtenidos hasta el momento
+createTable(adj.r.squared)

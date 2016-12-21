@@ -426,7 +426,7 @@ confint(lm5)
 adj.r.squared <- c(adj.r.squared, lm5=round(summary(lm5)$adj.r.squared, digits = 4))
 ```
 
-##### Conclusiones
+##### Resultados
 
 Para ver que ajuste lineal es mejor se va a utlizar el *R2 ajustado* ya que, *R2* aumenta automáticamente a medida que se agrega nuevas variables independientes a una ecuación de regresión. *R2 ajustado* aumenta sólo cuando se agrega nuevas variables independientes que hacen aumentar el poder explicativo de la ecuación de regresión.
 
@@ -476,7 +476,7 @@ summary(lm10)
 adj.r.squared <- c(adj.r.squared, lm10=round(summary(lm10)$adj.r.squared, digits = 4))
 ```
 
-##### Conclusiones
+##### Resultados
 
 La unión de las variables *Max_temperature* y *Min_temperature* nos da un *R cuadrado ajustado* de 0.9915 mientras que las de la unión de todas las variables da como resultado 0.9924. Si se quitan las variables apenas hay diferencias respecto al resultado por lo que para una sencilla interpretación de la salida es mejor utilizar el *lm6* por su simplicidad a la hora de elegir variables.
 
@@ -555,3 +555,99 @@ createTable(adj.r.squared)
 ```
 
 Como se puede observar la mejor aproximación que se tiene al realizar las interacciones es la regresión lineal *lm13*, que interacciona *Max_temperature* con *Sea_level_pressure*. Aún así su valor es inferior a *lm6*, tal como se muestra en la siguiente tabla.
+
+#### Ajustes no lineales, polinómicas
+
+El siguiente paso es probar una aproximación polinómica. Para ello se utilizarán cada una de las variables elegidas para la aproximación lineal simple. Mediante la función *poly* se creará un modelo que siga la siguiente estructura: *Y = b0 + (b1 * x) + (b2 * x^2)*. Se generarán dos modelos para cada variable. En el primero de grado muy alto y el segundo se irá reduciendo el grado hasta que la perdida en el *R2 ajustado* sea considerable.
+
+##### Max_temperature
+
+```{r}
+# en la función poly se usa el atributo raw para que nose un polinomio ortogonal.
+
+## Polinómica para Max_temperature
+
+nlm1 <- lm(Mean_temperature~poly(Max_temperature, 19, raw = T), data = wizmir)
+summary(nlm1)
+
+# se rebaja el grado a 4
+nlm1 <- lm(Mean_temperature~poly(Max_temperature, 4, raw = T), data = wizmir)
+summary(nlm1)
+adj.r.squared <- c(adj.r.squared, nlm1=round(summary(nlm1)$adj.r.squared, digits = 4))
+```
+
+##### Min_temperature
+
+```{r}
+## Polinómica para Min_temperature
+
+nlm2 <- lm(Mean_temperature~poly(Min_temperature, 19, raw = T), data = wizmir)
+summary(nlm2)
+
+# Rebajo el grado a 4
+nlm2 <- lm(Mean_temperature~poly(Min_temperature, 4, raw = T), data = wizmir)
+summary(nlm2)
+adj.r.squared <- c(adj.r.squared, nlm2=round(summary(nlm2)$adj.r.squared, digits = 4))
+```
+
+##### Dewpoint
+
+```{r}
+## Polinómica para Dewpoint
+nlm3 <- lm(Mean_temperature~poly(Dewpoint, 20, raw = T), data = wizmir)
+summary(nlm3)
+
+# Rebajo el grado a 5
+nlm3 <- lm(Mean_temperature~poly(Dewpoint, 5, raw = T), data = wizmir)
+summary(nlm3)
+adj.r.squared <- c(adj.r.squared, nlm3=round(summary(nlm3)$adj.r.squared, digits = 4))
+```
+
+##### Sea_level_pressure
+
+El modelo obtenido posee un *R2 ajustado* muy bajo.
+
+```{r}
+## Polinómica para Sea_level_pressure
+nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 15, raw = T), data = wizmir)
+summary(nlm4)
+
+## Grado 3
+nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 3, raw = T), data = wizmir)
+summary(nlm4)
+adj.r.squared <- c(adj.r.squared, nlm4=round(summary(nlm4)$adj.r.squared, digits = 4))
+```
+
+##### Standard_pressure
+
+La aproximación no lineal usada para la variable *Standard_pressure* no es muy buena tal como se muestra en el siguiente código:
+
+```{r}
+# Polinómica para Standard_pressure a grado 6
+nlm5 <- lm(Mean_temperature~poly(Standard_pressure, 6, raw = T), data = wizmir)
+summary(nlm5)
+
+## Polinómica para Standard_pressure, directamente a grado 4
+nlm5 <- lm(Mean_temperature~poly(Standard_pressure, 4, raw = T), data = wizmir)
+summary(nlm5)
+adj.r.squared <- c(adj.r.squared, nlm5=round(summary(nlm5)$adj.r.squared, digits = 4))
+```
+
+
+##### Polinómica unión entre Max_temperature y Min_temperature
+
+Adicionalmente se prueba con un polinómio que mezcle las dos mejores aproximaciones por separado que son *Max_temperature* y *Min_temperature*.
+
+```{r}
+nlm6 <- lm(Mean_temperature~Max_temperature +Min_temperature +I(Max_temperature * Min_temperature) +I(Max_temperature^2) +I(Max_temperature^2 * Min_temperature),data = wizmir)
+summary(nlm6)
+adj.r.squared <- c(adj.r.squared, nlm6=round(summary(nlm6)$adj.r.squared, digits = 4))
+```
+
+##### Resultados
+
+```{r}
+createTable(adj.r.squared)
+```
+
+
