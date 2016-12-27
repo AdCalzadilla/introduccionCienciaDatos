@@ -1,3 +1,6 @@
+# Paquetes que vamos a utilizar
+require(kknn)
+
 # Importamos el fichero con los datos para el trabajo
 wizmir <- read.csv2("./wizmir/wizmir.dat", header = F, sep = ",", comment.char = "@", dec = ".")
 # Nombres de las variables
@@ -11,20 +14,48 @@ percentage <- function(x){
   x * 100
 }
 
-createTable <- function(x){
-  df <- data.frame(cbind(x), stringsAsFactors = F)
-  porcentaje <- sapply(df[,1], as.numeric)
-  porcentaje <- sapply(df[,1], percentage)
-  df <- cbind(df, porcentaje)
-  df
-}
-
 ## Función para calcular la moda
 
 getMode <- function(v) {
   uniqv <- unique(v)
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
+
+# Función para calcular el error RMSE (Error cuadrático medio)
+
+RMSE <- function(x){
+  # Formula
+  yprime=predict(x,wizmir)
+  sqrt(sum(abs(Mean_temperature-yprime)^2)/length(yprime))
+}
+
+# Estructura de datos para guardar los valores obtenidos de un modelo.
+df <- data.frame(
+  r.squared = numeric(0), 
+  porCiento_R = numeric(0), 
+  adj.r.squared = numeric(0), 
+  porCientoR2 = numeric(0), 
+  RMSE = numeric(0))
+
+# Función para crear las filas del data.frame
+
+createRow <- function(x){
+  valueList <- c(round(summary(x)$r.squared, digits = 4),
+                 percentage(summary(x)$r.squared),
+                 round(summary(x)$adj.r.squared, digits = 4),
+                 percentage(summary(x)$adj.r.squared),
+                 rmse)
+}
+
+# Función para poner el nombre a cada fila del data.frame df.
+
+putName <- function(nameRow){
+  aux <- row.names(df)
+  aux[length(aux)] <- nameRow
+  row.names(df) <- aux
+  df
+}
+
 
 # Miramos el tipo de objeto que tenemos y el tipo de sus variables.
 
@@ -273,8 +304,13 @@ summary(lm1)
 plot(Mean_temperature~Max_temperature, wizmir)
 abline(lm1, col="red")
 confint(lm1)
-# Lista para ir introduciendo los resultados del r2 ajustado.
-adj.r.squared <- list(lm1=round(summary(lm1)$adj.r.squared, digits = 4))
+rmse <- RMSE(lm1)
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm1)
+# Almacenamiento de los valores en el data.frame df
+df[1,] <- valueList
+df <- putName("lm1")
 
 ## Min_temperature
 
@@ -283,7 +319,14 @@ summary(lm2)
 plot(Mean_temperature~Min_temperature, wizmir)
 abline(lm2, col="red")
 confint(lm2)
-adj.r.squared <- c(adj.r.squared, lm2=round(summary(lm2)$adj.r.squared, digits = 4))
+rmse <- RMSE(lm2)
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm2)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm2")
 
 ## Dewpoint
 
@@ -292,7 +335,14 @@ summary(lm3)
 plot(Mean_temperature~Dewpoint, wizmir)
 abline(lm3, col= "red")
 confint(lm3)
-adj.r.squared <- c(adj.r.squared, lm3=round(summary(lm3)$adj.r.squared, digits = 4))
+rmse <- RMSE(lm3)
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm3)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm3")
 
 ## Sea_level_pressure
 
@@ -301,7 +351,14 @@ summary(lm4)
 plot(Mean_temperature~Sea_level_pressure, wizmir)
 abline(lm4, col = "red")
 confint(lm4)
-adj.r.squared <- c(adj.r.squared, lm4=round(summary(lm4)$adj.r.squared, digits = 4))
+rmse <- RMSE(lm4)
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm4)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm4")
 
 ## Standard_pressure
 
@@ -310,11 +367,18 @@ summary(lm5)
 plot(Mean_temperature~Standard_pressure, data = wizmir)
 abline(lm5, col = "red")
 confint(lm5)
-adj.r.squared <- c(adj.r.squared, lm5=round(summary(lm5)$adj.r.squared, digits = 4))
+rmse <- RMSE(lm5)
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm5)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm5")
 
 ## Conclusiones (Tabla con todos los r2 ajustados)
 
-createTable(adj.r.squared)
+df
 
 # Modelo lineal múltiple
 
@@ -322,87 +386,181 @@ createTable(adj.r.squared)
 
 lm6 <- lm(Mean_temperature~Max_temperature+Min_temperature, data = wizmir)
 summary(lm6)
-adj.r.squared <- c(adj.r.squared, lm6=round(summary(lm6)$adj.r.squared, digits = 4))
+rmse <- RMSE(lm6)
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm6)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm6")
 
 ## Modelo con todas las variables
 
 lm7 <- lm(Mean_temperature~., data = wizmir)
 summary(lm7)
-adj.r.squared <- c(adj.r.squared, lm7=round(summary(lm7)$adj.r.squared, digits = 4))
+rmse <- RMSE(lm7)
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm7)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm7")
 
 ## Eliminación de las variables no relevantes
 
 lm8 <- lm(Mean_temperature~.-Precipitation-Wind_speed, data = wizmir)
 summary(lm8)
-adj.r.squared <- c(adj.r.squared, lm8=round(summary(lm8)$adj.r.squared, digits = 4))
+rmse <- RMSE(lm8)
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm8)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm8")
 
 lm9 <- lm(Mean_temperature~.-Precipitation-Wind_speed-Standard_pressure-Max_wind_speed, data = wizmir)
 summary(lm9)
-adj.r.squared <- c(adj.r.squared, lm9=round(summary(lm9)$adj.r.squared, digits = 4))
+rmse <- RMSE(lm9)
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm9)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm9")
 
 lm10 <- lm(Mean_temperature~.-Precipitation-Wind_speed-Standard_pressure-Max_wind_speed-Dewpoint, data = wizmir)
 summary(lm10)
-adj.r.squared <- c(adj.r.squared, lm10=round(summary(lm10)$adj.r.squared, digits = 4))
 
-## Conclusiones (Tabla con todos los r2 ajustados)
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm10)
 
-createTable(adj.r.squared)
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm10")
+
+## Conclusiones
+
+df
 
 # Interacciones (Todos con todos)
 
 ## Max_temperature * Min_temperature
 lm11 <- lm(Mean_temperature~Max_temperature*Min_temperature, data = wizmir)
 summary(lm11)
-adj.r.squared <- c(adj.r.squared, lm11=round(summary(lm11)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm11)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm11")
 
 # Max_temperature * Dewpoint
 lm12 <- lm(Mean_temperature~Max_temperature*Dewpoint, data = wizmir)
 summary(lm12)
-adj.r.squared <- c(adj.r.squared, lm12=round(summary(lm12)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm12)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm12")
 
 # Max_temperature * Sea_level_pressure
 lm13 <- lm(Mean_temperature~Max_temperature*Sea_level_pressure, data = wizmir)
 summary(lm13)
-adj.r.squared <- c(adj.r.squared, lm13=round(summary(lm13)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm13)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm13")
 
 # Max_temperature * Standard_pressure
 lm14 <- lm(Mean_temperature~Max_temperature*Standard_pressure, data = wizmir)
 summary(lm14)
-adj.r.squared <- c(adj.r.squared, lm14=round(summary(lm14)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm14)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm14")
 
 # Min_temperature * Dewpoint
 lm15 <- lm(Mean_temperature~Min_temperature*Dewpoint, data = wizmir)
 summary(lm15)
-adj.r.squared <- c(adj.r.squared, lm15=round(summary(lm15)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm15)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm15")
 
 # Min_temperature * Sea_level_pressure
 lm16 <- lm(Mean_temperature~Min_temperature*Sea_level_pressure, data = wizmir)
 summary(lm16)
-adj.r.squared <- c(adj.r.squared, lm16=round(summary(lm16)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm16)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm16")
 
 # Min_temperature * Standard_pressure
 lm17 <- lm(Mean_temperature~Min_temperature*Standard_pressure, data = wizmir)
 summary(lm17)
-adj.r.squared <- c(adj.r.squared, lm17=round(summary(lm17)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm17)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm17")
 
 # Dewpoint * Sea_level_pressure
 lm18 <- lm(Mean_temperature~Dewpoint*Sea_level_pressure, data = wizmir)
 summary(lm18)
-adj.r.squared <- c(adj.r.squared, lm18=round(summary(lm18)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm18)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm18")
 
 # Dewpoint * Standard_pressure
 lm19 <- lm(Mean_temperature~Dewpoint*Standard_pressure, data = wizmir)
 summary(lm19)
-adj.r.squared <- c(adj.r.squared, lm19=round(summary(lm19)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm19)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm19")
 
 # Sea_level_pressure * Standard_pressure
 lm20 <- lm(Mean_temperature~Sea_level_pressure*Standard_pressure, data = wizmir)
 summary(lm20)
-adj.r.squared <- c(adj.r.squared, lm20=round(summary(lm20)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(lm20)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("lm20")
 
 ## Conclusiones (Tabla con todos los r2 ajustados)
 
-createTable(adj.r.squared)
+df
 
 # Regresión no lineal
 
@@ -414,7 +572,13 @@ summary(nlm1)
 # Rebajo el grado a 4
 nlm1 <- lm(Mean_temperature~poly(Max_temperature, 4, raw = T), data = wizmir)
 summary(nlm1)
-adj.r.squared <- c(adj.r.squared, nlm1=round(summary(nlm1)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(nlm1)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("nlm1")
 
 ## Polinómica para Min_temperature
 
@@ -424,7 +588,13 @@ summary(nlm2)
 # Rebajo el grado a 4
 nlm2 <- lm(Mean_temperature~poly(Min_temperature, 4, raw = T), data = wizmir)
 summary(nlm2)
-adj.r.squared <- c(adj.r.squared, nlm2=round(summary(nlm2)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(nlm2)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("nlm2")
 
 ## Polinómica para Dewpoint
 nlm3 <- lm(Mean_temperature~poly(Dewpoint, 20, raw = T), data = wizmir)
@@ -433,7 +603,13 @@ summary(nlm3)
 # Rebajo el grado a 5
 nlm3 <- lm(Mean_temperature~poly(Dewpoint, 5, raw = T), data = wizmir)
 summary(nlm3)
-adj.r.squared <- c(adj.r.squared, nlm3=round(summary(nlm3)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(nlm3)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("nlm3")
 
 ## Polinómica para Sea_level_pressure, directamente a grado 5
 nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 15, raw = T), data = wizmir)
@@ -441,18 +617,58 @@ summary(nlm4)
 
 nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 3, raw = T), data = wizmir)
 summary(nlm4)
-adj.r.squared <- c(adj.r.squared, nlm4=round(summary(nlm4)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(nlm4)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("nlm4")
 
 ## Polinómica para Standard_pressure, directamente a grado 4
 nlm5 <- lm(Mean_temperature~poly(Standard_pressure, 4, raw = T), data = wizmir)
 summary(nlm5)
-adj.r.squared <- c(adj.r.squared, nlm5=round(summary(nlm5)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(nlm5)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("nlm5")
 
 ## Polinómica unión entre Max_temperature y Min_temperature
 
 nlm6 <- lm(Mean_temperature~Max_temperature +Min_temperature +I(Max_temperature * Min_temperature) +I(Max_temperature^2) +I(Max_temperature^2 * Min_temperature),data = wizmir)
 summary(nlm6)
-adj.r.squared <- c(adj.r.squared, nlm6=round(summary(nlm6)$adj.r.squared, digits = 4))
+
+# Lista para ir introduciendo los resultados del r2.
+valueList <- createRow(nlm6)
+
+# Almacenamiento de los valores en el data.frame df
+df <- rbind(df, valueList)
+df <- putName("nlm6")
 
 # Resultados obtenidos hasta el momento
-createTable(adj.r.squared)
+df
+
+dfBest <- df[df$porCientoR2 > 99 & df$porCiento_R > 99,]
+dfBest[, 5]
+
+
+# k-nn
+
+# knn en problemas de regresión
+
+# Obtención del modelo para el conjunto de datos entero 
+#knn1 <- kknn(Mean_temperature ~ ., wizmir, wizmir) # Por defecto k = 7, distance = 2, kernel = "optimal“ # y scale=TRUE
+#names(knn1)
+#knn1$fitted.values
+# Visualización
+#plot(Mean_temperature~Max_temperature)
+#points(Max_temperature,knn1$fitted.values,col="blue",pch=20)
+#summary(knn1)
+
+
+
+
+
