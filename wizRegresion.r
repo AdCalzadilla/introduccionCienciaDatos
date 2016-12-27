@@ -31,10 +31,10 @@ RMSE <- function(x){
 
 # Estructura de datos para guardar los valores obtenidos de un modelo.
 df <- data.frame(
-  r.squared = numeric(0), 
-  porCiento_R = numeric(0), 
-  adj.r.squared = numeric(0), 
-  porCientoR2 = numeric(0), 
+  r.squared = numeric(0),
+  porCiento_R = numeric(0),
+  adj.r.squared = numeric(0),
+  porCientoR2 = numeric(0),
   RMSE = numeric(0))
 
 # Función para crear las filas del data.frame
@@ -376,7 +376,7 @@ valueList <- createRow(lm5)
 df <- rbind(df, valueList)
 df <- putName("lm5")
 
-## Conclusiones (Tabla con todos los r2 ajustados)
+## Resultados
 
 df
 
@@ -442,7 +442,7 @@ valueList <- createRow(lm10)
 df <- rbind(df, valueList)
 df <- putName("lm10")
 
-## Conclusiones
+## Resultados
 
 df
 
@@ -558,7 +558,7 @@ valueList <- createRow(lm20)
 df <- rbind(df, valueList)
 df <- putName("lm20")
 
-## Conclusiones (Tabla con todos los r2 ajustados)
+## Resultados (Tabla con todos los r2 ajustados)
 
 df
 
@@ -652,14 +652,15 @@ df <- putName("nlm6")
 df
 
 dfBest <- df[df$porCientoR2 > 99 & df$porCiento_R > 99,]
-dfBest[, 5]
+# Modelo ordenado de menos a mayor RMSE
+dfBest[order(dfBest$RMSE),]
 
 
 # k-nn
 
 # knn en problemas de regresión
 
-# Obtención del modelo para el conjunto de datos entero 
+# Obtención del modelo para el conjunto de datos entero
 #knn1 <- kknn(Mean_temperature ~ ., wizmir, wizmir) # Por defecto k = 7, distance = 2, kernel = "optimal“ # y scale=TRUE
 #names(knn1)
 #knn1$fitted.values
@@ -667,8 +668,3 @@ dfBest[, 5]
 #plot(Mean_temperature~Max_temperature)
 #points(Max_temperature,knn1$fitted.values,col="blue",pch=20)
 #summary(knn1)
-
-
-
-
-
