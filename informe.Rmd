@@ -564,6 +564,7 @@ df <- putName("lm9")
 ```{r}
 lm10 <- lm(Mean_temperature~.-Precipitation-Wind_speed-Standard_pressure-Max_wind_speed-Dewpoint, data = wizmir)
 summary(lm10)
+rmse <- RMSE(lm10)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm10)
@@ -588,6 +589,7 @@ Para realizar las *interacciones* se usarán las cinco variables escogidas anter
 ```{r}
 lm11 <- lm(Mean_temperature~Max_temperature*Min_temperature, data = wizmir)
 summary(lm11)
+rmse <- RMSE(lm11)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm11)
@@ -600,6 +602,7 @@ df <- putName("lm11")
 ```{r}
 lm12 <- lm(Mean_temperature~Max_temperature*Dewpoint, data = wizmir)
 summary(lm12)
+rmse <- RMSE(lm12)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm12)
@@ -612,6 +615,7 @@ df <- putName("lm12")
 ```{r}
 lm13 <- lm(Mean_temperature~Max_temperature*Sea_level_pressure, data = wizmir)
 summary(lm13)
+rmse <- RMSE(lm13)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm13)
@@ -624,6 +628,7 @@ df <- putName("lm13")
 ```{r}
 lm14 <- lm(Mean_temperature~Max_temperature*Standard_pressure, data = wizmir)
 summary(lm14)
+rmse <- RMSE(lm14)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm14)
@@ -637,6 +642,7 @@ df <- putName("lm14")
 # Min_temperature * Dewpoint
 lm15 <- lm(Mean_temperature~Min_temperature*Dewpoint, data = wizmir)
 summary(lm15)
+rmse <- RMSE(lm15)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm15)
@@ -650,6 +656,7 @@ df <- putName("lm15")
 # Min_temperature * Sea_level_pressure
 lm16 <- lm(Mean_temperature~Min_temperature*Sea_level_pressure, data = wizmir)
 summary(lm16)
+rmse <- RMSE(lm16)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm16)
@@ -663,6 +670,7 @@ df <- putName("lm16")
 # Min_temperature * Standard_pressure
 lm17 <- lm(Mean_temperature~Min_temperature*Standard_pressure, data = wizmir)
 summary(lm17)
+rmse <- RMSE(lm17)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm17)
@@ -676,6 +684,7 @@ df <- putName("lm17")
 # Dewpoint * Sea_level_pressure
 lm18 <- lm(Mean_temperature~Dewpoint*Sea_level_pressure, data = wizmir)
 summary(lm18)
+rmse <- RMSE(lm18)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm18)
@@ -689,6 +698,7 @@ df <- putName("lm18")
 # Dewpoint * Standard_pressure
 lm19 <- lm(Mean_temperature~Dewpoint*Standard_pressure, data = wizmir)
 summary(lm19)
+rmse <- RMSE(lm19)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm19)
@@ -702,6 +712,7 @@ df <- putName("lm19")
 # Sea_level_pressure * Standard_pressure
 lm20 <- lm(Mean_temperature~Sea_level_pressure*Standard_pressure, data = wizmir)
 summary(lm20)
+rmse <- RMSE(lm20)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm20)
@@ -736,6 +747,7 @@ summary(nlm1)
 # Rebajo el grado a 4
 nlm1 <- lm(Mean_temperature~poly(Max_temperature, 4, raw = T), data = wizmir)
 summary(nlm1)
+rmse <- RMSE(nlm1)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm1)
@@ -757,6 +769,7 @@ summary(nlm2)
 # Rebajo el grado a 4
 nlm2 <- lm(Mean_temperature~poly(Min_temperature, 4, raw = T), data = wizmir)
 summary(nlm2)
+rmse <- RMSE(nlm2)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm2)
@@ -776,6 +789,7 @@ summary(nlm3)
 # Rebajo el grado a 5
 nlm3 <- lm(Mean_temperature~poly(Dewpoint, 5, raw = T), data = wizmir)
 summary(nlm3)
+rmse <- RMSE(nlm3)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm3)
@@ -790,12 +804,14 @@ df <- putName("nlm3")
 El modelo obtenido posee un *R2 ajustado* muy bajo.
 
 ```{r}
-## Polinómica para Sea_level_pressure, directamente a grado 5
+## Polinómica para Sea_level_pressure
 nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 15, raw = T), data = wizmir)
 summary(nlm4)
 
+## Grado 3
 nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 3, raw = T), data = wizmir)
 summary(nlm4)
+rmse <- RMSE(nlm3)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm4)
@@ -813,6 +829,7 @@ La aproximación no lineal usada para la variable *Standard_pressure* no es muy 
 ## Polinómica para Standard_pressure, directamente a grado 4
 nlm5 <- lm(Mean_temperature~poly(Standard_pressure, 4, raw = T), data = wizmir)
 summary(nlm5)
+rmse <- RMSE(nlm5)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm5)
@@ -831,6 +848,7 @@ Adicionalmente se prueba con un polinómio que mezcle las dos mejores aproximaci
 
 nlm6 <- lm(Mean_temperature~Max_temperature +Min_temperature +I(Max_temperature * Min_temperature) +I(Max_temperature^2) +I(Max_temperature^2 * Min_temperature),data = wizmir)
 summary(nlm6)
+rmse <- RMSE(nlm6)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm6)
@@ -857,6 +875,6 @@ Es una medida de cuán bueno es un modelo. Cuanto menor sea el *RMSE*, tanto mej
 dfBest[order(dfBest$RMSE),]
 ```
 
-El modelo que mejor se ajusta según el *RMSE* es el *lm7*, el cuál es un modelo lineal múltiple con todas las variables. Los siguientes en la lista: *lm8*, *lm9* y *lm10* son modelos multivariables que desestiman algunas variables del modelo *lm7*. los tres últimos de la lista son los modelos de interacción, de no linealidad y lineal múltiple entre los dos mejores ajustes lineales por separado, en este orden.
+El modelo que mejor se ajusta según el *RMSE* es el *lm7*, el cuál es un modelo lineal múltiple con todas las variables. Además ese modelo también tiene el mejor valor de error cuadrático. Los siguientes en la lista: *lm8*, *lm9* y *lm10* son modelos multivariables que desestiman algunas de ellas del modelo *lm7*. los tres últimos de la lista son los modelos de interacción, de no linealidad y lineal múltiple entre los dos mejores ajustes lineales por separado, en este orden.
 
-A pesar de ser el último en la lista, por su simplicidad y por la diferencia de tan solo un 0.06 respecto al mejor de la lista el modelo seleccionado como el adecuado es el *lm6*.
+A pesar de ser el último en la lista, por su simplicidad y por la diferencia de tan solo un 0.06 respecto al mejor de la lista en el *RMSE* el modelo seleccionado hasta el momento como el adecuado es el *lm6*.

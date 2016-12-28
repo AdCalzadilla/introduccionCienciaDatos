@@ -434,6 +434,7 @@ df <- putName("lm9")
 
 lm10 <- lm(Mean_temperature~.-Precipitation-Wind_speed-Standard_pressure-Max_wind_speed-Dewpoint, data = wizmir)
 summary(lm10)
+rmse <- RMSE(lm10)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm10)
@@ -451,6 +452,7 @@ df
 ## Max_temperature * Min_temperature
 lm11 <- lm(Mean_temperature~Max_temperature*Min_temperature, data = wizmir)
 summary(lm11)
+rmse <- RMSE(lm11)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm11)
@@ -473,6 +475,7 @@ df <- putName("lm12")
 # Max_temperature * Sea_level_pressure
 lm13 <- lm(Mean_temperature~Max_temperature*Sea_level_pressure, data = wizmir)
 summary(lm13)
+rmse <- RMSE(lm13)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm13)
@@ -484,6 +487,7 @@ df <- putName("lm13")
 # Max_temperature * Standard_pressure
 lm14 <- lm(Mean_temperature~Max_temperature*Standard_pressure, data = wizmir)
 summary(lm14)
+rmse <- RMSE(lm14)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm14)
@@ -495,6 +499,7 @@ df <- putName("lm14")
 # Min_temperature * Dewpoint
 lm15 <- lm(Mean_temperature~Min_temperature*Dewpoint, data = wizmir)
 summary(lm15)
+rmse <- RMSE(lm15)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm15)
@@ -506,6 +511,7 @@ df <- putName("lm15")
 # Min_temperature * Sea_level_pressure
 lm16 <- lm(Mean_temperature~Min_temperature*Sea_level_pressure, data = wizmir)
 summary(lm16)
+rmse <- RMSE(lm16)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm16)
@@ -517,6 +523,7 @@ df <- putName("lm16")
 # Min_temperature * Standard_pressure
 lm17 <- lm(Mean_temperature~Min_temperature*Standard_pressure, data = wizmir)
 summary(lm17)
+rmse <- RMSE(lm17)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm17)
@@ -528,6 +535,7 @@ df <- putName("lm17")
 # Dewpoint * Sea_level_pressure
 lm18 <- lm(Mean_temperature~Dewpoint*Sea_level_pressure, data = wizmir)
 summary(lm18)
+rmse <- RMSE(lm18)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm18)
@@ -539,6 +547,7 @@ df <- putName("lm18")
 # Dewpoint * Standard_pressure
 lm19 <- lm(Mean_temperature~Dewpoint*Standard_pressure, data = wizmir)
 summary(lm19)
+rmse <- RMSE(lm19)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm19)
@@ -550,6 +559,7 @@ df <- putName("lm19")
 # Sea_level_pressure * Standard_pressure
 lm20 <- lm(Mean_temperature~Sea_level_pressure*Standard_pressure, data = wizmir)
 summary(lm20)
+rmse <- RMSE(lm20)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(lm20)
@@ -572,6 +582,7 @@ summary(nlm1)
 # Rebajo el grado a 4
 nlm1 <- lm(Mean_temperature~poly(Max_temperature, 4, raw = T), data = wizmir)
 summary(nlm1)
+rmse <- RMSE(nlm1)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm1)
@@ -588,6 +599,7 @@ summary(nlm2)
 # Rebajo el grado a 4
 nlm2 <- lm(Mean_temperature~poly(Min_temperature, 4, raw = T), data = wizmir)
 summary(nlm2)
+rmse <- RMSE(nlm2)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm2)
@@ -603,6 +615,7 @@ summary(nlm3)
 # Rebajo el grado a 5
 nlm3 <- lm(Mean_temperature~poly(Dewpoint, 5, raw = T), data = wizmir)
 summary(nlm3)
+rmse <- RMSE(nlm3)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm3)
@@ -611,12 +624,14 @@ valueList <- createRow(nlm3)
 df <- rbind(df, valueList)
 df <- putName("nlm3")
 
-## Polinómica para Sea_level_pressure, directamente a grado 5
+## Polinómica para Sea_level_pressure
 nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 15, raw = T), data = wizmir)
 summary(nlm4)
 
+# Grado 3
 nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 3, raw = T), data = wizmir)
 summary(nlm4)
+rmse <- RMSE(nlm4)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm4)
@@ -628,6 +643,7 @@ df <- putName("nlm4")
 ## Polinómica para Standard_pressure, directamente a grado 4
 nlm5 <- lm(Mean_temperature~poly(Standard_pressure, 4, raw = T), data = wizmir)
 summary(nlm5)
+rmse <- RMSE(nlm5)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm5)
@@ -640,6 +656,7 @@ df <- putName("nlm5")
 
 nlm6 <- lm(Mean_temperature~Max_temperature +Min_temperature +I(Max_temperature * Min_temperature) +I(Max_temperature^2) +I(Max_temperature^2 * Min_temperature),data = wizmir)
 summary(nlm6)
+rmse <- RMSE(nlm6)
 
 # Lista para ir introduciendo los resultados del r2.
 valueList <- createRow(nlm6)
