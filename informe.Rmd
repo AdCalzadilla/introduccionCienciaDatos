@@ -26,6 +26,9 @@ La temperatura media se trata de promedios estadísticos cogidos a lo largo del 
 Para analizar el conjunto de datos proporcionado. En primer lugar se lee y exporta el fichero con los datos de *wizmir*, se crean las funciones que se van a utilizar en el proceso así como las estructuras de datos necesarias. Se introducen los nombres de las variables a mano y se comprueba si es un *data.frame*.
 
 ```{r}
+# Paquetes que vamos a utilizar
+require(kknn)
+
 wizmir <- read.csv2("./wizmir/wizmir.dat", header = F, sep = ",", comment.char = "@", dec = ".")
 names(wizmir) <- c("Max_temperature", "Min_temperature", "Dewpoint", "Precipitation", "Sea_level_pressure", "Standard_pressure", "Visibility", "Wind_speed", "Max_wind_speed", "Mean_temperature")
 
@@ -45,11 +48,16 @@ getMode <- function(v) {
 }
 
 # Función para calcular el error RMSE (Error cuadrático medio)
-
 RMSE <- function(x){
   # Formula
   yprime=predict(x,wizmir)
   sqrt(sum(abs(Mean_temperature-yprime)^2)/length(yprime))
+}
+
+# Función para calcular el error al usar knn
+knnRMSE <- function(x){
+  yprime <- x$fitted.values
+  sqrt(sum((Mean_temperature-yprime)^2)/length(yprime)) #RMSE
 }
 
 # Estructura de datos para guardar los valores obtenidos de un modelo.
@@ -878,3 +886,118 @@ dfBest[order(dfBest$RMSE),]
 El modelo que mejor se ajusta según el *RMSE* es el *lm7*, el cuál es un modelo lineal múltiple con todas las variables. Además ese modelo también tiene el mejor valor de error cuadrático. Los siguientes en la lista: *lm8*, *lm9* y *lm10* son modelos multivariables que desestiman algunas de ellas del modelo *lm7*. los tres últimos de la lista son los modelos de interacción, de no linealidad y lineal múltiple entre los dos mejores ajustes lineales por separado, en este orden.
 
 A pesar de ser el último en la lista, por su simplicidad y por la diferencia de tan solo un 0.06 respecto al mejor de la lista en el *RMSE* el modelo seleccionado hasta el momento como el adecuado es el *lm6*.
+
+### KNN
+
+*K near neighbors, KNN* es un algoritmo simple que almacena todos los casos disponibles y predice un objetivo numérico basado en una medidas similares. *KNN* se utiliza en la estimación estadística y reconocimiento de patrones desde principios de los setenta como una técnica no paramétrica.
+
+A continuación se le aplicará el algoritmo *KNN* a los mejores modelos obtenidos hasta el momento. El algoritmo se desarrollará utilizando la distancia *Euclidea*, el número de vecinos será igual a siete, el *kernel* utilizado será el *optimal* y las variables estarán escaladas para tener igual desviación estandar.
+
+#### Modelo Max_temperature + Min_temperature (lm6)
+
+```{r}
+# knn para los mejores modelos hasta el momento
+# La función kknn tiene por defecto:
+#  k = 7 (número de vecinos), distance = 2 (euclidea), kernel = "optimal“ y scale=TRUE
+
+## Max_temperature + Min_temperature (lm6)
+knn1 <- kknn(Mean_temperature~Max_temperature + Min_temperature, wizmir, wizmir)
+rmse <- sqrt(sum((Mean_temperature-yprime)^2)/length(yprime)) #RMSE
+
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn1")
+```
+
+#### Mean_temperature ~ . (lm7)
+
+```{r}
+## Mean_temperature ~ . (lm7)
+knn2 <- kknn(Mean_temperature ~ ., wizmir, wizmir)
+# Error RMSE knn
+rmse <- knnRMSE(knn2)
+
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn2")
+```
+
+#### Mean_temperature ~ . - Precipitation - Wind_speed (lm8)
+
+```{r}
+##  Mean_temperature ~ . - Precipitation - Wind_speed (lm8)
+knn3 <- kknn( Mean_temperature ~ . - Precipitation - Wind_speed, wizmir, wizmir)
+# Error RMSE knn
+rmse <- knnRMSE(knn3)
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn3")
+```
+
+#### Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - Max_wind_speed (lm9)
+
+```{r}
+## Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - Max_wind_speed (lm9)
+knn4 <- kknn(Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - Max_wind_speed, wizmir, wizmir)
+# Error RMSE knn
+rmse <- knnRMSE(knn4)
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn4")
+```
+
+#### Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - Max_wind_speed - Dewpoint (lm10)
+
+```{r}
+## Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - 
+# Max_wind_speed - Dewpoint (lm10)
+knn5 <- kknn(Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - Max_wind_speed - Dewpoint, wizmir, wizmir)
+rmse <- knnRMSE(knn5)
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn5")
+```
+
+#### Mean_temperature ~ Max_temperature * Min_temperature (lm11)
+
+```{r}
+## Mean_temperature ~ Max_temperature * Min_temperature (lm11)
+knn6 <- kknn(Mean_temperature ~ Max_temperature * Min_temperature, wizmir, wizmir)
+rmse <- knnRMSE(knn6)
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn6")
+```
+
+#### Mean_temperature ~ Max_temperature + Min_temperature + I(Max_temperature * Min_temperature) + I(Max_temperature^2) + I(Max_temperature^2 * Min_temperature) (nlm6)
+
+```{r}
+## Mean_temperature ~ Max_temperature + Min_temperature + I(Max_temperature * Min_temperature) +
+# I(Max_temperature^2) + I(Max_temperature^2 * Min_temperature) ()
+knn7 <- kknn(Mean_temperature ~ Max_temperature + Min_temperature + I(Max_temperature * Min_temperature) + I(Max_temperature^2) + I(Max_temperature^2 * Min_temperature), wizmir, wizmir)
+rmse <- knnRMSE(knn7)
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn7")
+```
+
+#### Resultados
+
+En la tabla siguiente se muestran todos los resultados obtenidos en los modelos implementados
+
+```{r}
+# Visualización de df
+df
+```
+
+Para facilitar la lectura se seleccionan los modelos cuyo *RMSE* sea inferior a 2, además se ordenand de menor a mayor para poder observar a simple vista cual de ellos tiene el menor *RMSE*.
+
+```{r}
+# Mejores RMSE
+dfBest <- df[df$RMSE < 2,]
+# Modelo ordenado de menos a mayor RMSE
+dfBest[order(dfBest$RMSE),]
+```
+
+## K-fold cross-validation
+

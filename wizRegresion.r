@@ -675,13 +675,70 @@ dfBest[order(dfBest$RMSE),]
 
 # k-nn
 
-# knn en problemas de regresión
+# knn para los mejores modelos hasta el momento
+# La función kknn tiene por defecto:
+#  k = 7 (número de vecinos), distance = 2 (euclidea), kernel = "optimal“ y scale=TRUE
 
-# Obtención del modelo para el conjunto de datos entero
-#knn1 <- kknn(Mean_temperature ~ ., wizmir, wizmir) # Por defecto k = 7, distance = 2, kernel = "optimal“ # y scale=TRUE
-#names(knn1)
-#knn1$fitted.values
-# Visualización
-#plot(Mean_temperature~Max_temperature)
-#points(Max_temperature,knn1$fitted.values,col="blue",pch=20)
-#summary(knn1)
+## Max_temperature + Min_temperature (lm6)
+knn1 <- kknn(Mean_temperature~Max_temperature + Min_temperature, wizmir, wizmir)
+rmse <- sqrt(sum((Mean_temperature-yprime)^2)/length(yprime)) #RMSE
+
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn1")
+
+## Mean_temperature ~ . (lm7)
+knn2 <- kknn(Mean_temperature ~ ., wizmir, wizmir)
+# Error RMSE knn
+rmse <- knnRMSE(knn2)
+
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn2")
+
+##  Mean_temperature ~ . - Precipitation - Wind_speed (lm8)
+knn3 <- kknn( Mean_temperature ~ . - Precipitation - Wind_speed, wizmir, wizmir)
+# Error RMSE knn
+rmse <- knnRMSE(knn3)
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn3")
+
+## Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - Max_wind_speed (lm9)
+knn4 <- kknn(Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - Max_wind_speed, wizmir, wizmir)
+# Error RMSE knn
+rmse <- knnRMSE(knn4)
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn4")
+
+## Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - 
+# Max_wind_speed - Dewpoint (lm10)
+knn5 <- kknn(Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - Max_wind_speed - Dewpoint, wizmir, wizmir)
+rmse <- knnRMSE(knn5)
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn5")
+
+## Mean_temperature ~ Max_temperature * Min_temperature (lm11)
+knn6 <- kknn(Mean_temperature ~ Max_temperature * Min_temperature, wizmir, wizmir)
+rmse <- knnRMSE(knn6)
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn6")
+
+## Mean_temperature ~ Max_temperature + Min_temperature + I(Max_temperature * Min_temperature) +
+# I(Max_temperature^2) + I(Max_temperature^2 * Min_temperature) ()
+knn7 <- kknn(Mean_temperature ~ Max_temperature + Min_temperature + I(Max_temperature * Min_temperature) + I(Max_temperature^2) + I(Max_temperature^2 * Min_temperature), wizmir, wizmir)
+rmse <- knnRMSE(knn7)
+# Almacenamiento del error RMSE en el data.frame df
+df <- rbind(df, c(NA,NA,NA,NA,rmse))
+df <- putName("knn7")
+
+# Visualización de df
+df
+
+# Mejores RMSE
+dfBest <- df[df$RMSE < 2,]
+# Modelo ordenado de menos a mayor RMSE
+dfBest[order(dfBest$RMSE),]
