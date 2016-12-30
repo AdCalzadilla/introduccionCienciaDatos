@@ -29,6 +29,12 @@ RMSE <- function(x){
   sqrt(sum(abs(Mean_temperature-yprime)^2)/length(yprime))
 }
 
+# Función para calcular el error al usar knn
+knnRMSE <- function(x){
+  yprime <- x$fitted.values
+  sqrt(sum((Mean_temperature-yprime)^2)/length(yprime)) #RMSE
+}
+
 # Estructura de datos para guardar los valores obtenidos de un modelo.
 df <- data.frame(
   r.squared = numeric(0),
@@ -49,7 +55,7 @@ createRow <- function(x){
 
 # Función para poner el nombre a cada fila del data.frame df.
 
-putName <- function(nameRow){
+putName <- function(nameRow, df){
   aux <- row.names(df)
   aux[length(aux)] <- nameRow
   row.names(df) <- aux
@@ -310,7 +316,7 @@ rmse <- RMSE(lm1)
 valueList <- createRow(lm1)
 # Almacenamiento de los valores en el data.frame df
 df[1,] <- valueList
-df <- putName("lm1")
+df <- putName("lm1",df)
 
 ## Min_temperature
 
@@ -326,7 +332,7 @@ valueList <- createRow(lm2)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm2")
+df <- putName("lm2",df)
 
 ## Dewpoint
 
@@ -342,7 +348,7 @@ valueList <- createRow(lm3)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm3")
+df <- putName("lm3",df)
 
 ## Sea_level_pressure
 
@@ -358,7 +364,7 @@ valueList <- createRow(lm4)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm4")
+df <- putName("lm4",df)
 
 ## Standard_pressure
 
@@ -374,7 +380,7 @@ valueList <- createRow(lm5)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm5")
+df <- putName("lm5",df)
 
 ## Resultados
 
@@ -393,7 +399,7 @@ valueList <- createRow(lm6)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm6")
+df <- putName("lm6",df)
 
 ## Modelo con todas las variables
 
@@ -406,7 +412,7 @@ valueList <- createRow(lm7)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm7")
+df <- putName("lm7",df)
 
 ## Eliminación de las variables no relevantes
 
@@ -419,7 +425,7 @@ valueList <- createRow(lm8)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm8")
+df <- putName("lm8",df)
 
 lm9 <- lm(Mean_temperature~.-Precipitation-Wind_speed-Standard_pressure-Max_wind_speed, data = wizmir)
 summary(lm9)
@@ -430,7 +436,7 @@ valueList <- createRow(lm9)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm9")
+df <- putName("lm9",df)
 
 lm10 <- lm(Mean_temperature~.-Precipitation-Wind_speed-Standard_pressure-Max_wind_speed-Dewpoint, data = wizmir)
 summary(lm10)
@@ -441,7 +447,7 @@ valueList <- createRow(lm10)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm10")
+df <- putName("lm10",df)
 
 ## Resultados
 
@@ -459,7 +465,7 @@ valueList <- createRow(lm11)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm11")
+df <- putName("lm11",df)
 
 # Max_temperature * Dewpoint
 lm12 <- lm(Mean_temperature~Max_temperature*Dewpoint, data = wizmir)
@@ -470,7 +476,7 @@ valueList <- createRow(lm12)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm12")
+df <- putName("lm12",df)
 
 # Max_temperature * Sea_level_pressure
 lm13 <- lm(Mean_temperature~Max_temperature*Sea_level_pressure, data = wizmir)
@@ -482,7 +488,7 @@ valueList <- createRow(lm13)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm13")
+df <- putName("lm13",df)
 
 # Max_temperature * Standard_pressure
 lm14 <- lm(Mean_temperature~Max_temperature*Standard_pressure, data = wizmir)
@@ -494,7 +500,7 @@ valueList <- createRow(lm14)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm14")
+df <- putName("lm14",df)
 
 # Min_temperature * Dewpoint
 lm15 <- lm(Mean_temperature~Min_temperature*Dewpoint, data = wizmir)
@@ -506,7 +512,7 @@ valueList <- createRow(lm15)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm15")
+df <- putName("lm15",df)
 
 # Min_temperature * Sea_level_pressure
 lm16 <- lm(Mean_temperature~Min_temperature*Sea_level_pressure, data = wizmir)
@@ -518,7 +524,7 @@ valueList <- createRow(lm16)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm16")
+df <- putName("lm16",df)
 
 # Min_temperature * Standard_pressure
 lm17 <- lm(Mean_temperature~Min_temperature*Standard_pressure, data = wizmir)
@@ -530,7 +536,7 @@ valueList <- createRow(lm17)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm17")
+df <- putName("lm17",df)
 
 # Dewpoint * Sea_level_pressure
 lm18 <- lm(Mean_temperature~Dewpoint*Sea_level_pressure, data = wizmir)
@@ -542,7 +548,7 @@ valueList <- createRow(lm18)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm18")
+df <- putName("lm18",df)
 
 # Dewpoint * Standard_pressure
 lm19 <- lm(Mean_temperature~Dewpoint*Standard_pressure, data = wizmir)
@@ -554,7 +560,7 @@ valueList <- createRow(lm19)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm19")
+df <- putName("lm19",df)
 
 # Sea_level_pressure * Standard_pressure
 lm20 <- lm(Mean_temperature~Sea_level_pressure*Standard_pressure, data = wizmir)
@@ -566,7 +572,7 @@ valueList <- createRow(lm20)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("lm20")
+df <- putName("lm20",df)
 
 ## Resultados (Tabla con todos los r2 ajustados)
 
@@ -589,7 +595,7 @@ valueList <- createRow(nlm1)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("nlm1")
+df <- putName("nlm1",df)
 
 ## Polinómica para Min_temperature
 
@@ -606,7 +612,7 @@ valueList <- createRow(nlm2)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("nlm2")
+df <- putName("nlm2",df)
 
 ## Polinómica para Dewpoint
 nlm3 <- lm(Mean_temperature~poly(Dewpoint, 20, raw = T), data = wizmir)
@@ -622,7 +628,7 @@ valueList <- createRow(nlm3)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("nlm3")
+df <- putName("nlm3",df)
 
 ## Polinómica para Sea_level_pressure
 nlm4 <- lm(Mean_temperature~poly(Sea_level_pressure, 15, raw = T), data = wizmir)
@@ -638,7 +644,7 @@ valueList <- createRow(nlm4)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("nlm4")
+df <- putName("nlm4",df)
 
 ## Polinómica para Standard_pressure, directamente a grado 4
 nlm5 <- lm(Mean_temperature~poly(Standard_pressure, 4, raw = T), data = wizmir)
@@ -650,7 +656,7 @@ valueList <- createRow(nlm5)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("nlm5")
+df <- putName("nlm5",df)
 
 ## Polinómica unión entre Max_temperature y Min_temperature
 
@@ -663,7 +669,7 @@ valueList <- createRow(nlm6)
 
 # Almacenamiento de los valores en el data.frame df
 df <- rbind(df, valueList)
-df <- putName("nlm6")
+df <- putName("nlm6",df)
 
 # Resultados obtenidos hasta el momento
 df
@@ -681,11 +687,11 @@ dfBest[order(dfBest$RMSE),]
 
 ## Max_temperature + Min_temperature (lm6)
 knn1 <- kknn(Mean_temperature~Max_temperature + Min_temperature, wizmir, wizmir)
-rmse <- sqrt(sum((Mean_temperature-yprime)^2)/length(yprime)) #RMSE
+rmse <- knnRMSE(knn1)
 
 # Almacenamiento del error RMSE en el data.frame df
 df <- rbind(df, c(NA,NA,NA,NA,rmse))
-df <- putName("knn1")
+df <- putName("knn1",df)
 
 ## Mean_temperature ~ . (lm7)
 knn2 <- kknn(Mean_temperature ~ ., wizmir, wizmir)
@@ -694,7 +700,7 @@ rmse <- knnRMSE(knn2)
 
 # Almacenamiento del error RMSE en el data.frame df
 df <- rbind(df, c(NA,NA,NA,NA,rmse))
-df <- putName("knn2")
+df <- putName("knn2",df)
 
 ##  Mean_temperature ~ . - Precipitation - Wind_speed (lm8)
 knn3 <- kknn( Mean_temperature ~ . - Precipitation - Wind_speed, wizmir, wizmir)
@@ -702,7 +708,7 @@ knn3 <- kknn( Mean_temperature ~ . - Precipitation - Wind_speed, wizmir, wizmir)
 rmse <- knnRMSE(knn3)
 # Almacenamiento del error RMSE en el data.frame df
 df <- rbind(df, c(NA,NA,NA,NA,rmse))
-df <- putName("knn3")
+df <- putName("knn3",df)
 
 ## Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - Max_wind_speed (lm9)
 knn4 <- kknn(Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - Max_wind_speed, wizmir, wizmir)
@@ -710,22 +716,22 @@ knn4 <- kknn(Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressu
 rmse <- knnRMSE(knn4)
 # Almacenamiento del error RMSE en el data.frame df
 df <- rbind(df, c(NA,NA,NA,NA,rmse))
-df <- putName("knn4")
+df <- putName("knn4",df)
 
-## Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - 
+## Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure -
 # Max_wind_speed - Dewpoint (lm10)
 knn5 <- kknn(Mean_temperature ~ . - Precipitation - Wind_speed - Standard_pressure - Max_wind_speed - Dewpoint, wizmir, wizmir)
 rmse <- knnRMSE(knn5)
 # Almacenamiento del error RMSE en el data.frame df
 df <- rbind(df, c(NA,NA,NA,NA,rmse))
-df <- putName("knn5")
+df <- putName("knn5",df)
 
 ## Mean_temperature ~ Max_temperature * Min_temperature (lm11)
 knn6 <- kknn(Mean_temperature ~ Max_temperature * Min_temperature, wizmir, wizmir)
 rmse <- knnRMSE(knn6)
 # Almacenamiento del error RMSE en el data.frame df
 df <- rbind(df, c(NA,NA,NA,NA,rmse))
-df <- putName("knn6")
+df <- putName("knn6",df)
 
 ## Mean_temperature ~ Max_temperature + Min_temperature + I(Max_temperature * Min_temperature) +
 # I(Max_temperature^2) + I(Max_temperature^2 * Min_temperature) ()
@@ -733,7 +739,7 @@ knn7 <- kknn(Mean_temperature ~ Max_temperature + Min_temperature + I(Max_temper
 rmse <- knnRMSE(knn7)
 # Almacenamiento del error RMSE en el data.frame df
 df <- rbind(df, c(NA,NA,NA,NA,rmse))
-df <- putName("knn7")
+df <- putName("knn7",df)
 
 # Visualización de df
 df
@@ -742,3 +748,86 @@ df
 dfBest <- df[df$RMSE < 2,]
 # Modelo ordenado de menos a mayor RMSE
 dfBest[order(dfBest$RMSE),]
+
+
+# Función cogida de las transparencias de clase
+nombre <- "./wizmir/wizmir"
+run_lm_fold <- function(i, x, tt = "test", z) {
+  file <- paste(x, "-5-", i, "tra.dat", sep="")
+  x_tra <- read.csv(file, comment.char="@")
+  file <- paste(x, "-5-", i, "tst.dat", sep="")
+  x_tst <- read.csv(file, comment.char="@")
+  In <- length(names(x_tra)) - 1
+  names(x_tra)[1:In] <- paste ("X", 1:In, sep="")
+  names(x_tra)[In+1] <- "Y"
+  names(x_tst)[1:In] <- paste ("X", 1:In, sep="")
+  names(x_tst)[In+1] <- "Y"
+  if (tt == "train") {
+    test <- x_tra
+  }
+  else {
+    test <- x_tst
+  }
+  if(substr(z, start=1, stop=1) == "k"){
+    z <- substr(z, start = 2, stop = nchar(z))
+    print("Entro en el if del knn con ")
+    print(z)
+    fitMulti=kknn(z,x_tra,test)
+    yprime=fitMulti$fitted.values
+  }
+  else{
+    fitMulti = lm(z,x_tra)
+    yprime=predict(fitMulti,test)
+  }
+  #fitMulti=lm(Y~.,x_tra)
+
+  #fitMulti = lm(Y~X1 + X2, x_tra)
+  #yprime=predict(fitMulti,test)
+  sum(abs(test$Y-yprime)^2)/length(yprime) ##MSE
+}
+# lm6 (Mean_temperature~Max_temperature + Min_temperature)
+lmMSEtrain_lm6<-mean(sapply(1:5,run_lm_fold,nombre,"train", "Y~X1 + X2"))
+lmMSEtest_lm6<-mean(sapply(1:5,run_lm_fold,nombre,"test", "Y~X1 + X2"))
+
+# knn1 (misma fórmula)
+lmMSEtrain_knn1<-mean(sapply(1:5,run_lm_fold,nombre,"train", "kY~X1 + X2"))
+lmMSEtest_knn1<-mean(sapply(1:5,run_lm_fold,nombre,"test", "kY~X1 + X2"))
+
+# lm7 (Mean_temperature~.)
+lmMSEtrain_lm7<-mean(sapply(1:5,run_lm_fold,nombre,"train", "Y~."))
+lmMSEtest_lm7<-mean(sapply(1:5,run_lm_fold,nombre,"test", "Y~."))
+
+# lm8 Mean_temperature ~ . - Precipitation - Wind_speed
+lmMSEtrain_lm8<-mean(sapply(1:5,run_lm_fold,nombre,"train", "Y~. - X4 - X8"))
+lmMSEtest_lm8<-mean(sapply(1:5,run_lm_fold,nombre,"test", "Y~. - X4 - X8"))
+
+# knn6 (Mean_temperature ~ Max_temperature * Min_temperature)
+lmMSEtrain_knn6<-mean(sapply(1:5,run_lm_fold,nombre,"train", "kY~X1 * X2"))
+lmMSEtest_knn6<-mean(sapply(1:5,run_lm_fold,nombre,"test", "kY~X1 * X2"))
+
+# knn7 (Mean_temperature ~ Max_temperature + Min_temperature +     I(Max_temperature *
+# Min_temperature) + I(Max_temperature^2) +     I(Max_temperature^2 * Min_temperature))
+lmMSEtrain_knn7<-mean(sapply(1:5,run_lm_fold,nombre,"train", "kY~X1 + I(X1*X2) + I(X1^2) + I(X1^2 * X2)"))
+lmMSEtest_knn7<-mean(sapply(1:5,run_lm_fold,nombre,"test", "kY~X1 + I(X1*X2) + I(X1^2) + I(X1^2 * X2)"))
+
+# Introducimos los resultados obtenidos en un data.frame.
+
+dfMSE <- data.frame(training_error = numeric(0),
+                    test_error = numeric(0))
+
+dfMSE[1,] <- c(lmMSEtrain_lm6, lmMSEtest_lm6)
+dfMSE <- putName("lm6", dfMSE)
+dfMSE <- rbind(dfMSE, c(lmMSEtrain_knn1, lmMSEtest_knn1))
+dfMSE <- putName("knn1", dfMSE)
+dfMSE <- rbind(dfMSE, c(lmMSEtrain_lm7, lmMSEtest_lm7))
+dfMSE <- putName("lm7", dfMSE)
+dfMSE <- rbind(dfMSE, c(lmMSEtrain_lm8, lmMSEtest_lm8))
+dfMSE <- putName("lm8", dfMSE)
+dfMSE <- rbind(dfMSE, c(lmMSEtrain_knn6, lmMSEtest_knn6))
+dfMSE <- putName("knn6", dfMSE)
+dfMSE <- rbind(dfMSE, c(lmMSEtrain_knn7, lmMSEtest_knn7))
+dfMSE <- putName("knn7", dfMSE)
+dfMSE
+
+# Fórmula del mejor ajuste encontrado
+lm8$call$formula
