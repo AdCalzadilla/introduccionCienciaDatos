@@ -1097,3 +1097,77 @@ Después de observar la tabla podemos comprobar que los modelos lineales se comp
 lm8$call$formula
 ```
 
+### Comparativa entre distintos algoritmos
+
+A partir de las tablas disponibles en *csv* con resultados de *LM*, *k-NN* y *M5*, que se pueden descargar en *PRADO*, se cargan los datos para aplicar tests estadísticos:
+
+```{r}
+#leemos la tabla con los errores medios de test (código sacado de los apuntes)
+resultados <- read.csv("./wizmir/regr_test_alumnos.csv")
+tablatst <- cbind(resultados[,2:dim(resultados)[2]])
+colnames(tablatst) <- names(resultados)[2:dim(resultados)[2]]
+rownames(tablatst) <- resultados[,1]
+```
+
+Se sustituye el valor tanto de *regresión lineal* como el de *KNN* en la fila del *wizmir* por los valores obtenidos de la regresión lineal multivariable, *lm7*, y de la aplicación de la misma fórmula al *knn*, en este caso *knn1*.
+
+```{r}
+# Regresión linear
+tablatst["wizmir", "out_test_lm"] <- dfMSE["lm7","test_error"]
+tablatst["wizmir", "out_test_kknn"] <- dfMSE["knn1","test_error"]
+```
+
+#### Test de Wilcoxon
+
+Se quiere comparar *LM* y *kNN* por *Wilcoxon*. El objetivo del test es comprobar si puede dictaminarse mediante la mediana si los valores *LM* y *KNN* son o no iguales.
+
+En primer lugar se normaliza el error:
+
+```{r}
+# Comparativa por pares de LM y KNN (Wilcoxon’s test) ##lm (other) vs knn (ref)
+# + 0.1 porque wilcox R falla para valores == 0 en la tabla
+difs <- (tablatst[,1] - tablatst[,2]) / tablatst[,1]
+```
+
+Se monta una nueva tabla donde para cada conjunto de datos, si la diferencia es positiva se pone 0 para Other y abs(DIFF) para Ref.Alg., y a la inversa si es negativa
+
+```{r}
+wilc_1_2 <- cbind(ifelse(difs<0, abs(difs)+0.1, 0+0.1), ifelse(difs>0, abs(difs)+0.1, 0+0.1))
+colnames(wilc_1_2) <- c(colnames(tablatst)[1], colnames(tablatst)[2])
+head(wilc_1_2)
+```
+
+Y finalmente, se aplica el test de *Wilcoxon*.
+
+```{r}
+# Se aplica el test y se interpretan los resultados
+LMvsKNNtst <- wilcox.test(wilc_1_2[,1], wilc_1_2[,2], alternative = "two.sided", paired=TRUE)
+Rmas <- LMvsKNNtst$statistic
+pvalue <- LMvsKNNtst$p.value
+LMvsKNNtst <- wilcox.test(wilc_1_2[,2], wilc_1_2[,1], alternative = "two.sided", paired=TRUE)
+Rmenos <- LMvsKNNtst$statistic
+Rmas
+Rmenos
+pvalue
+```
+
+Vemos que el *p-value* obtenido es mayor que 0.05 por lo tanto se acepta la hipótesis nula, es decir, no existen diferencias significativas entre ambos.
+
+Sólo hay un (1-0.5798416) *100 = 42.02% de confianza en que sean distintos.
+
+#### Friedman y como post- hoc Holm
+
+Comparativas Múltiples – se usará Friedman y como post- hoc Holm (los rankings se calculan por posiciones de los algoritmos para cada problema y no hace falta normalización)
+
+```{r}
+test_friedman <- friedman.test(as.matrix(tablatst))
+test_friedman
+```
+
+Se aplica post-hoc Holm
+
+```{r}
+tam <- dim(tablatst)
+groups <- rep(1:tam[2], each=tam[1])
+pairwise.wilcox.test(as.matrix(tablatst), groups, p.adjust = "holm", paired = TRUE)
+```
