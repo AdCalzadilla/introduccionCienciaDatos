@@ -902,7 +902,8 @@ A continuación se le aplicará el algoritmo *KNN* a los mejores modelos obtenid
 
 ## Max_temperature + Min_temperature (lm6)
 knn1 <- kknn(Mean_temperature~Max_temperature + Min_temperature, wizmir, wizmir)
-rmse <- sqrt(sum((Mean_temperature-yprime)^2)/length(yprime)) #RMSE
+#rmse <- sqrt(sum((Mean_temperature-yprime)^2)/length(yprime)) #RMSE
+rmse <- knnRMSE(knn1)
 
 # Almacenamiento del error RMSE en el data.frame df
 df <- rbind(df, c(NA,NA,NA,NA,rmse))
@@ -1024,8 +1025,6 @@ run_lm_fold <- function(i, x, tt = "test", z) {
   }
   if(substr(z, start=1, stop=1) == "k"){
     z <- substr(z, start = 2, stop = nchar(z))
-    print("Entro en el if del knn con ")
-    print(z)
     fitMulti=kknn(z,x_tra,test)
     yprime=fitMulti$fitted.values
   }
@@ -1155,19 +1154,25 @@ Vemos que el *p-value* obtenido es mayor que 0.05 por lo tanto se acepta la hip�
 
 Sólo hay un (1-0.5798416) *100 = 42.02% de confianza en que sean distintos.
 
-#### Friedman y como post- hoc Holm
+#### Friedman
 
-Comparativas Múltiples – se usará Friedman y como post- hoc Holm (los rankings se calculan por posiciones de los algoritmos para cada problema y no hace falta normalización)
+Es una prueba no paramétrica que contrasta más de dos grupos relacionados, partiendo de la hipótesis nula que estos provienen de la misma población.
 
 ```{r}
 test_friedman <- friedman.test(as.matrix(tablatst))
 test_friedman
 ```
 
-Se aplica post-hoc Holm
+Después de observar los resultados del *test de Friedman* se observa que el *p-value* es menor que 0.05 por lo que se rechaza la hipótesis nula y se acepta la alternativa la cuál dice que existen diferencias significativas entre algunos algoritmos.
+
+#### post-hoc Holm
+
+*Post-hoc* analiza los resultados de los datos experimentales. A menudo se basan en una tasa de error familiar; La probabilidad de al menos un error de Tipo I (falso positivo) en un conjunto de comparaciones.
 
 ```{r}
 tam <- dim(tablatst)
 groups <- rep(1:tam[2], each=tam[1])
 pairwise.wilcox.test(as.matrix(tablatst), groups, p.adjust = "holm", paired = TRUE)
 ```
+
+Existen diferencias significativas a favor de *M5* ("3"" vs "1"" 0.081 y "3"" vs "2"" 0.120, con aprox. 90% de confianza) mientras que los otros dos pueden ser considerados equivalentes.
