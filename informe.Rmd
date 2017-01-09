@@ -36,7 +36,9 @@ Para analizar el conjunto de datos proporcionado. En primer lugar se lee y expor
 require(kknn)
 
 wizmir <- read.csv2("./wizmir/wizmir.dat", header = F, sep = ",", comment.char = "@", dec = ".")
-names(wizmir) <- c("Max_temperature", "Min_temperature", "Dewpoint", "Precipitation", "Sea_level_pressure", "Standard_pressure", "Visibility", "Wind_speed", "Max_wind_speed", "Mean_temperature")
+names(wizmir) <- c("Max_temperature", "Min_temperature", "Dewpoint",
+                   "Precipitation", "Sea_level_pressure", "Standard_pressure",
+                   "Visibility", "Wind_speed", "Max_wind_speed", "Mean_temperature")
 
 # Creamos varias funciones que utilizaremos a lo largo del código
 
@@ -201,7 +203,7 @@ range(Min_temperature)
 quantile(Min_temperature)
 ```
 
-### Gráfica de Min_temperature respecto a Mean_temperature, la salida.
+##### Gráfica de Min_temperature respecto a Mean_temperature, la salida.
 
 La figura *Figura \ref{fig:plotMinTemperature}* representa *Min_temperature* respecto a la salida.
 
@@ -302,6 +304,8 @@ plot(Sea_level_pressure, Mean_temperature)
 
 #### Standard_pressure
 
+Las condiciones estándar para la presión son mediciones experimentales que se establecen para poder permitir comparaciones entre diferentes conjuntos de datos.
+
 #####  Medidas de centralidad
 
 ```{r}
@@ -322,6 +326,8 @@ quantile(Standard_pressure)
 ```
 
 ##### Gráfica de Standard_pressure respecto a Mean_temperature, la salida.
+
+La *Figura \ref{fig:plotStandardPressure}* muestra la gráfica entre esta variable y *Mean_temperature*.
 
 ```{r, fig.cap="plot de Standard_Pressure con Mean_temperature\\label{fig:plotStandardPressure}"}
 plot(Standard_pressure, Mean_temperature)
