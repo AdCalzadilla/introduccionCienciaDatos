@@ -36,6 +36,7 @@ vignettes/*.pdf
 .Rproj.user
 
 wizmir/*
+wisconsin/*
 
 *.Rproj
 

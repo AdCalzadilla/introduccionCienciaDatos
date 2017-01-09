@@ -1,15 +1,21 @@
 ---
-title: "informe"
+title: "Informe trabajo final Introducción a la Ciencia de Datos. Máster en Ciencia de Datos e Ingeniería de Computadores"
 author: "Adrián Calzadilla González"
-date: "12 de diciembre de 2016"
+date: "9 de Enero de 2017"
 output: pdf_document
+#toc: yes
+fig_caption: yes
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+\newpage
+\tableofcontents
+\listoffigures
+\newpage
 
-## Regresión data set Wizmir
+## Regresión dataset Wizmir
 
 ### Objetivo
 
@@ -19,7 +25,7 @@ Este fichero contiene la información del tiempo de la ciudad de *Esmira* (*Izmi
 
 #### Hipótesisi inicial
 
-La temperatura media se trata de promedios estadísticos cogidos a lo largo del día, por lo tanto es muy posible que la relación entre la temperatura media y las temperaturas máximas y mínimas sea importante para realizar un buen modelo.
+La temperatura media se trata a partir de promedios estadísticos cogidos a lo largo del día. Por lo tanto es muy posible que la relación entre la temperatura media, y las temperaturas máximas y mínimas sea importante para realizar un buen modelo.
 
 #### Análisis general
 
@@ -130,9 +136,9 @@ allMedian <- apply(wizmir, 2, median)
 allIQR <- apply(wizmir, 2, IQR)
 ```
 
-Por último, se grafican todas las variables todas con todas.
+Por último, se grafican todas las variables todas con todas. Tal como se muestra en la *Figura \ref{fig:plotWizmir}*.
 
-```{r}
+```{r test, fig.cap="Plot de todas las variables contra todas\\label{fig:plotWizmir}", fig.lp="test"}
 # Gráfica de todos con todos
 plot(wizmir)
 ```
@@ -166,7 +172,9 @@ quantile(Max_temperature)
 
 ##### Gráfica de Max_temperature respecto a Mean_temperature, la salida.
 
-```{r}
+En la *Figura \ref{fig:plotMaxTemperature}* se puede observar la gráfica de *Max_temperature* respecto a la salida.
+
+```{r, fig.cap="plot Max_temperature respecto a Mean_temperature\\label{fig:plotMaxTemperature}"}
 plot(Max_temperature, Mean_temperature)
 ```
 
@@ -193,9 +201,11 @@ range(Min_temperature)
 quantile(Min_temperature)
 ```
 
-### Gráfica de Max_temperature respecto a Mean_temperature, la salida.
+### Gráfica de Min_temperature respecto a Mean_temperature, la salida.
 
-```{r}
+La figura *Figura \ref{fig:plotMinTemperature}* representa *Min_temperature* respecto a la salida.
+
+```{r, fig.cap="plot de Min_temperature con Mean_temperature\\label{fig:plotMinTemperature}"}
 plot(Min_temperature, Mean_temperature)
 ```
 
@@ -224,7 +234,9 @@ quantile(Dewpoint)
 
 ##### Gráfica de Dewpoint respecto a Mean_temperature, la salida.
 
-```{r}
+En la *Figura \ref{fig:plotDewpoint}* se puede ver la representación gráfica de *Dewpoint* respecto a la salida.
+
+```{r, fig.cap="plot de Dewpoint con Mean_temperature\\label{fig:plotDewpoint}"}
 plot(Dewpoint, Mean_temperature)
 ```
 
@@ -233,8 +245,6 @@ plot(Dewpoint, Mean_temperature)
 Se considera *precipitación* a cualquier producto de la condensación del vapor de agua que cae bajo el efecto de la gravedad. Las principales formas de precipitación incluyen: lluvia, aguanieve, nieve y granizo.
 
 Este fenómeno ocurre cuando una porción de la atmósfera se satura con vapor de agua, de modo que el agua se condensa y cae.
-
-En este caso su unidad son **
 
 ##### Medidas de centralidad
 
@@ -257,7 +267,7 @@ quantile(Precipitation)
 
 ##### Gráfica de Precipitation respecto a Mean_temperature, la salida.
 
-```{r}
+```{r, fig.cap="plot de Precipitation con Mean_temperature\\label{fig:plotPrecipitation}"}
 plot(Precipitation, Mean_temperature)
 ```
 
@@ -286,7 +296,7 @@ quantile(Sea_level_pressure)
 
 ##### Gráfica de Sea_level_pressure respecto a Mean_temperature, la salida.
 
-```{r}
+```{r, fig.cap="plot de Sea_level_pressure con Mean_temperature\\label{fig:plotSeaLevelPressure}"}
 plot(Sea_level_pressure, Mean_temperature)
 ```
 
@@ -313,11 +323,13 @@ quantile(Standard_pressure)
 
 ##### Gráfica de Standard_pressure respecto a Mean_temperature, la salida.
 
-```{r}
+```{r, fig.cap="plot de Standard_Pressure con Mean_temperature\\label{fig:plotStandardPressure}"}
 plot(Standard_pressure, Mean_temperature)
 ```
 
 #### Visibility
+
+Para medir esta variable se realiza medidas de la transmisividad luminosa de la atmósfera y tratar de ajustar los valores a los de visibilidad.
 
 ##### Medidas de centralidad
 
@@ -340,11 +352,15 @@ quantile(Visibility)
 
 ##### Gráfica de Visibility respecto a Mean_temperature, la salida.
 
-```{r}
+En la *Figura \ref{fig:plotVisibility}* se muestra la gráfica de *Visibility* respecto a la salida.
+
+```{r, fig.cap="plot de Visibility con Mean_temperature\\label{fig:plotVisibility}"}
 plot(Visibility, Mean_temperature)
 ```
 
 #### Wind_speed
+
+Esta variable muestra la velocidad del viento.
 
 ##### Medidas de centralidad
 
@@ -367,11 +383,15 @@ quantile(Wind_speed)
 
 ##### Gráfica de Wind_speed respecto a Mean_temperature, la salida.
 
-```{r}
+La *Figura \ref{fig:plotWindSpeed}* muestra la gráfica de *WindSpeed* contra *Mean_temperature*.
+
+```{r, fig.cap="plot de Wind_speed con Mean_temperature\\label{fig:plotWindSpeed}"}
 plot(Wind_speed, Mean_temperature)
 ```
 
 #### Max_wind_speed
+
+La variable *Max_wind_speed* ofrece la velocidad máxima del viento obtenida a lo largo del día.
 
 ##### Medidas de centralidad
 
@@ -394,7 +414,9 @@ quantile(Max_wind_speed)
 
 ##### Gráfica de Max_wind_speed respecto a Mean_temperature, la salida.
 
-```{r}
+En la *Figura \ref{fig:plotMaxWindSpeed}* se puede observar la gráfica de *Max_wind_speed* respecto a la salida.
+
+```{r, fig.cap="plot de Max_wind_speed con Mean_temperature\\label{fig:plotMaxWindSpeed}"}
 plot(Max_wind_speed, Mean_temperature)
 ```
 
@@ -409,8 +431,16 @@ Después de graficar cada una de las variables contra la salida, se toman como v
 ```{r}
 lm1 <- lm(Mean_temperature~Max_temperature, data = wizmir)
 summary(lm1)
+```
+
+Una vez calculado *lm1* se grafica, tal como se muestra en la *Figura \ref{fig:plotLm1}*.
+
+```{r, fig.cap="plot de lm1 con Mean_temperature\\label{fig:plotLm1}"}
 plot(Mean_temperature~Max_temperature, wizmir)
 abline(lm1, col="red")
+```
+
+```{r}
 confint(lm1)
 rmse <- RMSE(lm1)
 
@@ -426,8 +456,16 @@ df <- putName("lm1", df)
 ```{r}
 lm2 <- lm(Mean_temperature~Min_temperature, data = wizmir)
 summary(lm2)
+```
+
+La *Figura \ref{fig:plotLm2}* muestra la regresión lineal en una gráfica.
+
+```{r, fig.cap="plot de Lm2 con Mean_temperature\\label{fig:plotLm2}"}
 plot(Mean_temperature~Min_temperature, wizmir)
 abline(lm2, col="red")
+```
+
+```{r}
 confint(lm2)
 rmse <- RMSE(lm2)
 
@@ -444,8 +482,16 @@ df <- putName("lm2",df)
 ```{r}
 lm3 <- lm(Mean_temperature~Dewpoint, data = wizmir)
 summary(lm3)
+```
+
+En la *Figura \ref{fig:plotLm3}* se puede observar la regresión lineal *lm3*.
+
+```{r, fig.cap="plot de Lm3 con Mean_temperature\\label{fig:plotLm3}"}
 plot(Mean_temperature~Dewpoint, wizmir)
 abline(lm3, col= "red")
+```
+
+```{r}
 confint(lm3)
 rmse <- RMSE(lm3)
 
@@ -462,8 +508,16 @@ df <- putName("lm3",df)
 ```{r}
 lm4 <- lm(Mean_temperature~Sea_level_pressure, data = wizmir)
 summary(lm4)
+```
+
+La *Figura \ref{fig:plotLm4}* muestra el ajuste lineal calculado respecto a la salida.
+
+```{r, fig.cap="plot de Lm4 con Mean_temperature\\label{fig:plotLm4}"}
 plot(Mean_temperature~Sea_level_pressure, wizmir)
 abline(lm4, col = "red")
+```
+
+```{r}
 confint(lm4)
 rmse <- RMSE(lm4)
 
@@ -480,8 +534,16 @@ df <- putName("lm4",df)
 ```{r}
 lm5 <- lm(Mean_temperature~Standard_pressure, data = wizmir)
 summary(lm5)
+```
+
+El ajuste lineal realizado entre *Standard_pressure* y *Mean_temperature* se puede observar en la *Figura \ref{fig:plotLm5}*.
+
+```{r, fig.cap="plot de Lm5 con Mean_temperature\\label{fig:plotLm5}"}
 plot(Mean_temperature~Standard_pressure, data = wizmir)
 abline(lm5, col = "red")
+```
+
+```{r}
 confint(lm5)
 rmse <- RMSE(lm5)
 
@@ -507,7 +569,7 @@ df
 
 Para ver que ajuste lineal múltiple es mejor se va a utlizar el *R2 ajustado* ya que, *R cuadrado* aumenta automáticamente a medida que se agrega nuevas variables independientes a una ecuación de regresión. *R2 ajustado* aumenta sólo cuando se agregan nuevas variables independientes que hacen aumentar el poder explicativo de la ecuación de regresión.
 
-En primer lugar calculamos el modelo lineal para las dos mejores valores de *R cuadrado* conocidos hasta ahora: *Max_temperature* y *Min_temperature*.
+En primer lugar se calcula el modelo lineal para los dos mejores valores de *R cuadrado* conocidos hasta ahora: *Max_temperature* y *Min_temperature*.
 
 ##### Max_temperature y Min_temperature
 
@@ -528,6 +590,8 @@ df <- putName("lm6",df)
 
 ##### Modelo con todas las variables
 
+Se prueba un ajuste lineal con todas las variables.
+
 ```{r}
 lm7 <- lm(Mean_temperature~., data = wizmir)
 summary(lm7)
@@ -542,6 +606,8 @@ df <- putName("lm7",df)
 ```
 
 ##### Eliminación variables no relevantes
+
+Del ajuste realizado en el paso anterior se quitan aquellas variables que interfieran muy poco en el resultado.
 
 ```{r}
 lm8 <- lm(Mean_temperature~.-Precipitation-Wind_speed, data = wizmir)
@@ -1000,12 +1066,13 @@ dfBest <- df[df$RMSE < 2,]
 dfBest[order(dfBest$RMSE),]
 ```
 
-## K-fold cross-validation
+### K-fold cross-validation
 
 La *validación cruzada* es una técnica utilizada para evaluar los resultados de un análisis estadístico. Consiste en repetir y calcular la media aritmética obtenida de las medidas de evaluación sobre diferentes particiones. Para el estudio se han seleccionado los dos mejores ajustes lineales y los dos mejores ajustes utilizando el algoritmo *knn*. Además se ha añadido el ajuste lineal *lm6* y el *knn1* por su sencilla interpretación.
 
 ```{r}
 # Función cogida de las transparencias de clase
+## Se han realizado algunos cambios.
 nombre <- "./wizmir/wizmir"
 run_lm_fold <- function(i, x, tt = "test", z) {
   file <- paste(x, "-5-", i, "tra.dat", sep="")
@@ -1032,10 +1099,6 @@ run_lm_fold <- function(i, x, tt = "test", z) {
     fitMulti = lm(z,x_tra)
     yprime=predict(fitMulti,test)
   }
-  #fitMulti=lm(Y~.,x_tra)
-
-  #fitMulti = lm(Y~X1 + X2, x_tra)
-  #yprime=predict(fitMulti,test)
   sum(abs(test$Y-yprime)^2)/length(yprime) ##MSE
 }
 ```
@@ -1063,10 +1126,12 @@ lmMSEtest_lm8<-mean(sapply(1:5,run_lm_fold,nombre,"test", "Y~. - X4 - X8"))
 lmMSEtrain_knn6<-mean(sapply(1:5,run_lm_fold,nombre,"train", "kY~X1 * X2"))
 lmMSEtest_knn6<-mean(sapply(1:5,run_lm_fold,nombre,"test", "kY~X1 * X2"))
 
-# knn7 (Mean_temperature ~ Max_temperature + Min_temperature +     I(Max_temperature * 
+# knn7 (Mean_temperature ~ Max_temperature + Min_temperature +     I(Max_temperature *
 # Min_temperature) + I(Max_temperature^2) +     I(Max_temperature^2 * Min_temperature))
-lmMSEtrain_knn7<-mean(sapply(1:5,run_lm_fold,nombre,"train", "kY~X1 + I(X1*X2) + I(X1^2) + I(X1^2 * X2)"))
-lmMSEtest_knn7<-mean(sapply(1:5,run_lm_fold,nombre,"test", "kY~X1 + I(X1*X2) + I(X1^2) + I(X1^2 * X2)"))
+lmMSEtrain_knn7<-mean(sapply(1:5,run_lm_fold,nombre,"train", "kY~X1 + I(X1*X2) + 
+                             I(X1^2) + I(X1^2 * X2)"))
+lmMSEtest_knn7<-mean(sapply(1:5,run_lm_fold,nombre,"test", "kY~X1 + I(X1*X2) +
+                            I(X1^2) + I(X1^2 * X2)"))
 ```
 
 Se introducen los resultados obtenidos en un *data.frame* para compararlos y seleccionar el modelo adecuado.
@@ -1176,3 +1241,258 @@ pairwise.wilcox.test(as.matrix(tablatst), groups, p.adjust = "holm", paired = TR
 ```
 
 Existen diferencias significativas a favor de *M5* ("3"" vs "1"" 0.081 y "3"" vs "2"" 0.120, con aprox. 90% de confianza) mientras que los otros dos pueden ser considerados equivalentes.
+
+## Clasificación dataset Wisconsin
+
+### Objetivo
+
+Este conjunto de datos contiene casos de un estudio que se llevó a cabo en la Universidad de Wisconsin, sobre los pacientes que se habían sometido a una cirugía para el cáncer de mama. La tarea es determinar si el tumor detectado es benigno o maligno.
+
+### Análisis de datos
+
+#### Análisis general
+
+Para analizar el conjunto de datos proporcionado. En primer lugar se lee y exporta el fichero con los datos de *wisconsin*.
+
+```{r}
+# Abrimos el fichero .dat
+wbcd <- read.csv2("./wisconsin/wisconsin.dat", header = F, sep = ",",
+                  comment.char = "@", stringsAsFactors = FALSE)
+names(wbcd) <- c("ClumpThickness", "CellSize", "CellShape", "MarginalAdhesion", "EpithelialSize",
+                 "BareNuclei", "BlandChromatin", "NormalNucleoli", "Mitoses", "Class")
+```
+
+Seguidamente, se analiza el *data.frame* y el tipo de variables que contiene:
+
+```{r}
+## Características generales de wizmir
+attach(wbcd)
+is.data.frame(wbcd)
+dim(wbcd)
+str(wbcd)
+
+### Cambio de tipo de la variable 'BareNuclei' a integer
+wbcd$BareNuclei <- as.integer(BareNuclei)
+
+### Existen valores "NA"
+table(is.na(wbcd))
+colSums(is.na(wbcd))
+```
+
+De los 699 casos que posee el *dataset*, 16 de ellos en la variable *BareNuclei* tienen valores *NA*. En un principio se eliminan estas filas quedando el *dataset* con 683 ejemplos.
+
+```{r}
+wbcd <- na.omit(wbcd)
+nrow(wbcd)
+```
+
+Resumen general del *data.frame* en el que se nos muestran valores como: el primer cuartil, la mediana, el tercer cuartil, la media y los *NA's* encontrados de cada variable.
+
+```{r}
+summary(wbcd)
+```
+
+A continuación, se calculan algunas métricas que no salen en *summary*:
+
+```{r}
+## Desviación estandar para cada una de las variables
+allSd <- apply(wbcd, 2, sd)
+## Mediana de cada una de las variables
+allMedian <- apply(wbcd, 2, median)
+## Rango intercuartílico
+allIQR <- apply(wbcd, 2, IQR)
+```
+
+Por último, se grafican todas las variables todas con todas.
+
+```{r, fig.cap="plot de todas las variables de Wisconsin.\\label{fig:plotWbcd}"}
+# Gráfica de todos con todos
+plot(wbcd,  col=wbcd[,10])
+```
+
+### Variables
+
+Conjunto de datos explicado uno a uno.
+
+#### ClumpThickness
+
+Esta variable hace referencia al hecho de que las células benignas tienden a agruparse en monocapas, mientras que las células cancerosas suelen agruparse en multicapas.
+
+#### CellSize
+
+Las células cancerosas tienden a variar en tamaño. Es por eso que estos parámetros son valiosos para determinar si las células son cancerosas o no.
+
+#### CellShape
+
+Es normal que las células cancerosas cambien en forma. Por eso es importante conocer el valor de esta variable.
+
+#### MarginAdhension
+
+Las células normales tienden a permanecer juntas. En cambio, las células cancerosas tienden a perder adhesión. Por lo tanto, la pérdida de adhesión es un signo de que la célula puede ser maligna.
+
+#### EpithelialSize
+
+Esta variable está relacionada con la uniformidad de la célula. Las células epiteliales que se agrupan significativamente pueden ser malignas.
+
+#### BareNuclei
+
+La variable *BareNuclei* hace referencia al término que se utiliza para los núcleos que no están rodeados por el citoplasma. Este suceso es muy típico en tumores benignos.
+
+#### BlandChromatin
+
+Sirve para describir la textura del núcleo visto en las células. En las benignas suele ser uniforme mientras que en las células cancerosas la cromática tiende a ser maligna.
+
+#### NormalNucleoli
+
+Los nucleolos son estructuras pequeñas vistas en el núcleo. Este suele ser muy pequeño en las células normales. En las células cancerosas los nucleolos se hacen más prominentes, y a veces se encuentran más de ellos.
+
+#### Mitoses
+
+Proceso de reproducción de una célula que consiste, fundamentalmente, en la división longitudinal de los cromosomas y en la división del núcleo y del citoplasma. 
+
+#### Class
+
+Tipo de tumor que se tiene: benigno o maligno.
+
+### Clasificación
+
+#### KNN
+
+El algoritmo *knn* es usado como método de clasificación de objetos basado en un entrenamiento mediante ejemplos en el espacio de los elementos. *knn* es un tipo de aprendizaje perezoso, donde la función se aproxima solo localmente y todo el cómputo es diferido a la clasificación.
+
+Para el desarrollo del algoritmo *knn* se va a utilizar *caret*, que es un paquete que proporciona una interfaz a casi 150 algoritmos de aprendizaje automático. También proporciona grandes funciones para muestrear datos, para el entrenamiento y tests, preprocesamiento y la evaluación del modelo entre otras características.
+
+Una vez cargado el paquete *caret*, el siguiente paso es pasar la variable *Class* a factor dándole los valores de *Benign* y *Malignant*.
+
+```{r}
+# Desarrollo con caret
+require(caret)
+# Convertimos la columna de la clase en un factor y le damos los valores de Benigno y Maligno
+wbcd$Class <- factor(wbcd$Class, levels = c(2, 4), labels = c("Benign", "Malignant"))
+
+# Vemos la tabla de diagnosis.
+table(wbcd$Class)
+
+# Porcentaje de valores Benigno y Maligno
+tbOrig <- round(prop.table(table(wbcd$Class)) * 100, digits = 1)
+tbOrig
+```
+
+Una vez factorizada la variable *Class* y ver el porcentaje de células benignas y células cancerígenas, se dispone a crear el modelo. Para ello se separa el dataset en entrenamiento, el 80%, y test, el 20%, aproximadamente.
+
+```{r}
+# Modelando
+# 80% train un 20% test
+wbcd_train <- wbcd[1:546, ]
+wbcd_test <- wbcd[547:683, ]
+```
+
+A continuación se ejecuta el modelo. Para ello se pasa se utiliza la función *train* del paquete *caret*. A dicha función se le pasa como parámetros: el objeto que se va a examinar, en este caso el data.frame *wbcd*, *data*, marco de datos a partir del cual se toman preferentemente las variables especificadas en la fórmula. el 
+
+```{r}
+# knnFit1
+knnFit1 <- train(Class ~ ., data=wbcd_train, method="knn",metric="Accuracy", tuneLength=20,
+                 preProc = c("center","scale"))
+knnFit1
+```
+
+Gráfica donde se muestra los valores de *Accuracy* dependiendo del número de vecinos utilizado.
+
+```{r, fig.cap="plot de knnFit1 \\label{fig:plotKnnFit1}"}
+# plot de knnFit1
+plot(knnFit1)
+```
+
+Posteriormente hallamos la matriz de confusión:
+
+```{r}
+# El predict
+knnPredict1 <- predict(knnFit1, newdata=wbcd_test)
+cmat1 <- confusionMatrix(knnPredict1, wbcd_test$Class, positive="Malignant")
+cmat1
+```
+
+#### LDA
+
+*Linear Discriminant Analysis* (*LDA*) es una técnica de aprendizaje supervisado para clasificar datos. La idea de *LDA* es obtener una proyección de los datos en un espacio de menor dimensión que los datos entrantes, como proposito de separar las clases lo más posible. Es una técnica de aprendizaje supervisado.
+
+Para utilizar este algorimo también se va a usar el paquete *caret*, quedando el código de la siguiente manera:
+
+```{r}
+require(MASS)
+trainData <- wbcd[,1:9]
+trainClasses <- wbcd[,10]
+ldaFit <- train(trainData, trainClasses,
+                method = "lda",
+                preProcess = c("center", "scale"),
+                tuneLength = 10,
+                trControl = trainControl(method = "cv"))
+cmat2 <- confusionMatrix(ldaFit)
+cmat2
+```
+
+#### QDA
+
+*Quadratic discriminant analysis* (*QDA*), es un clasificador cuadrático que se utiliza en el aprendizaje automático y la clasificación para separar dos o más clases de objetos por una superficie cuádrica.
+
+Al igual que en el *LDA*, para desarrollar *QDA* se va a utilizar el paquete *caret*:
+
+```{r}
+qdaFit <- train(trainData, trainClasses,
+                method = "qda",
+                preProcess = c("center", "scale"),
+                tuneLength = 10,
+                trControl = trainControl(method = "cv"))
+cmat3 <- confusionMatrix(qdaFit)
+cmat3
+```
+
+#### Comparativas
+
+Al igual que en el apartado de regresión se va a usar el fichero disponible en *PRADO* para la comparativa de algoritmos.
+
+```{r}
+#leemos la tabla con los datos de "Accuracy" (código sacado de los apuntes)
+resultados <- read.csv("./wisconsin/clasif_test_alumos.csv")
+tablatstClas <- cbind(resultados[,2:dim(resultados)[2]])
+colnames(tablatstClas) <- names(resultados)[2:dim(resultados)[2]]
+rownames(tablatstClas) <- resultados[,1]
+```
+
+Se sustituyen los valores obtenidos experimentalmente por los ya existentes en la tabla para el *dataset* *wisconsin*.
+
+```{r}
+tablatstClas["wisconsin", "out_test_knn"] <- 0.9781022
+tablatstClas["wisconsin", "out_test_lda"] <- 0.9605
+tablatstClas["wisconsin", "out_test_qda"] <- 0.9502
+```
+
+Para la comparación de los tres algoritmos se va a utilizar al igual que en regresión el test de Friedman
+
+#### Friedman
+
+```{r}
+test_friedman <- friedman.test(as.matrix(tablatstClas))
+test_friedman
+```
+
+Después de ver los resultados obtenidos al ejecutar el *test de Friedman* se observa que el *p-value* es mayor que 0.05 por lo que se acepta la hipótesis nula la cuál dice que no existen diferencias significativas entre los algoritmos.
+
+\newpage
+
+## Anexos
+
+### Códigos
+
+Para poder ver los códigos al completo dirigirse al siguiente repositorio de *gitHub*:
+
+* [https://github.com/AdCalzadilla/introduccionCienciaDatos](https://github.com/AdCalzadilla/introduccionCienciaDatos)
+
+En los siguientes ficheros se encuentra el código realizado en *r*.
+
+* [Regresión](https://github.com/AdCalzadilla/introduccionCienciaDatos/blob/master/wizRegresion.r)
+* [Clasificación](https://github.com/AdCalzadilla/introduccionCienciaDatos/blob/master/wisconsinClas.r)
+
+
+
+
